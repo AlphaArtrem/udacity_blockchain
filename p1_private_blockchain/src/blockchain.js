@@ -115,7 +115,54 @@ class Blockchain {
      * @param {*} star 
      */
     submitStar(address, message, signature, star) {
-       
+        let self = this;
+        return new Promise(async (resolve, reject) => {
+            const timeSent = parseInt(message.split(':')[1]);
+            const timeCurrent = new Date().getTime().toString.slice(0, -3);
+            if(timeCurrent - timeSent < 360){
+                let messageValdity = bitcoinMessage.verify(message, address, signature);
+                if(messageValdity){
+                    const newBlock = new BlockClass.Block({
+                        'owner' : address,
+                        'star' : star, 
+                    });
+                    const newBlockAdded = await self._addBlock(newBlock);
+                    if(newBlockAdded){
+                        resolve(newBlockAdded);
+                    }
+                    else{
+                        reject(null);
+                    }
+                }
+                else{
+                    reject(null);
+                }
+            }
+            else{
+                reject(null);
+            }             
+        });
+    }
+
+    /**
+     * This method will return a Promise that will resolve with the Block
+     *  with the hash passed as a parameter.
+     * Search on the chain array for the block that has the hash.
+     * @param {*} hash 
+     */
+    getBlockByHash(hash) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            const blockWithHash = self.chain.filter(function(block){
+                return block.hash == hash;
+            });
+            if(blockWithHash){
+                resolve(blockWithHash);
+            }
+            else{
+                reject(null);
+            }
+        });
     }
 
     /**

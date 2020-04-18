@@ -192,7 +192,21 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            
+            const blocksWithAddress = self.chain.filter(block => block.body['owner'] == address);
+            if(blocksWithAddress){
+                blocksWithAddress.forEach(block => {
+                    const decodedBlockData = await block.getBData();
+                    if(decodedBlockData){
+                        resolve(decodedBlockData);
+                    }
+                    else{
+                        reject(null);
+                    }
+                });
+            }
+            else{
+                reject(null);
+            }
         });
     }
 
@@ -205,8 +219,20 @@ class Blockchain {
     validateChain() {
         let self = this;
         let errorLog = [];
-        return new Promise(async (resolve, reject) => {
-            
+        return new Promise(async (resolve) => {
+            let previousBlockHash = null;
+            self.chain.forEach(block => {
+                const isValid = await block.validate();
+                if(isValid && previousBlockHash == block.hash)
+                {
+                    errorLog.push({
+                        'error' : 'Couldn\' validate block',
+                        'invalidBlock' : block
+                    });
+                }
+                previousBlockHash = block.hash;
+            });
+            resolve(errorLog);
         });
     }
 

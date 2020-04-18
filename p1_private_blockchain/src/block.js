@@ -46,6 +46,17 @@ class Block {
             
             // Returning the Block is valid
 
+
+            const hashBuffer = self.hash;
+            self.hash = null;
+
+            if(hashBuffer == SHA256(JSON.stringify(self).toString())){
+                resolve(true);
+            }
+            else{
+                reject(false);
+            }
+
         });
     }
 
@@ -65,6 +76,15 @@ class Block {
 
         // Resolve with the data if the object isn't the Genesis block
 
+        let self = this;
+
+        if(self.height != 0){
+            const ascii = hex2ascii(self.body);
+            const data = JSON.parse(ascii)
+            resolve(data);
+        }
+
+        resolve(null);
     }
 
 }

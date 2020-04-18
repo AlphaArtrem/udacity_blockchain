@@ -64,7 +64,21 @@ class Blockchain {
     _addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-           
+            if(block.body){
+                let blockHeight = await this.getChainHeight();
+                if(blockHeight > 0){
+                    block.previousBlockHash = await self.getBlockByHeight(blockHeight).hash;
+                }
+                block.height = blockHeight + 1; 
+                block.time = new Date().getTime().toString().slice(0, -3);      
+                block.hash = SHA256(JSON.stringify(block)).toString();
+                this.chain.push(block);
+                this.height++;
+                resolve(block)
+            }
+            else{
+                reject(null);
+            }
         });
     }
 
@@ -78,7 +92,8 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
-            
+            const timeStamp = new Date().getTime().toString().slice(0, -3);
+            resolve(address + ':' + timeStamp + ':' + 'starRegistry');
         });
     }
 
@@ -100,23 +115,7 @@ class Blockchain {
      * @param {*} star 
      */
     submitStar(address, message, signature, star) {
-        let self = this;
-        return new Promise(async (resolve, reject) => {
-            
-        });
-    }
-
-    /**
-     * This method will return a Promise that will resolve with the Block
-     *  with the hash passed as a parameter.
-     * Search on the chain array for the block that has the hash.
-     * @param {*} hash 
-     */
-    getBlockByHash(hash) {
-        let self = this;
-        return new Promise((resolve, reject) => {
-           
-        });
+       
     }
 
     /**

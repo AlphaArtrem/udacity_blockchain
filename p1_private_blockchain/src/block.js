@@ -49,8 +49,10 @@ class Block {
 
             const hashBuffer = self.hash;
             self.hash = null;
+            const newHash = SHA256(JSON.stringify(self).toString());
+            self.hash = hashBuffer;
 
-            if(hashBuffer == SHA256(JSON.stringify(self).toString())){
+            if(hashBuffer == newHash){
                 resolve(true);
             }
             else{

@@ -66,8 +66,9 @@ class Blockchain {
         return new Promise(async (resolve, reject) => {
             if(block.body){
                 let blockHeight = await this.getChainHeight();
-                if(blockHeight > 0){
-                    block.previousBlockHash = await self.getBlockByHeight(blockHeight).hash;
+                if(blockHeight >= 0){
+                    let last_block  = await self.getBlockByHeight(blockHeight);
+                    block.previousBlockHash = last_block.hash;
                 }
                 block.height = blockHeight + 1; 
                 block.time = new Date().getTime().toString().slice(0, -3);      
@@ -220,7 +221,7 @@ class Blockchain {
             let previousBlockHash = null;
             self.chain.forEach(async (block) => {
                 const isValid = await block.validate();
-                if(isValid && previousBlockHash == block.hash)
+                if(!isValid || previousBlockHash != block.previousBlockHash)
                 {
                     errorLog.push({
                         'error' : 'Couldn\' validate block',

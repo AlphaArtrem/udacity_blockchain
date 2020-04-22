@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import metaCoinArtifact from "../../build/contracts/MetaCoin.json";
+import metaCoinArtifact from "../../build/contracts/StarNotary.json";
 
 const App = {
   web3: null,
@@ -28,25 +28,35 @@ const App = {
     }
   },
 
-  refreshBalance: async function() {
-    const { getBalance } = this.meta.methods;
-    const balance = await getBalance(this.account).call();
-
-    const balanceElement = document.getElementsByClassName("balance")[0];
-    balanceElement.innerHTML = balance;
+  starNameFunc: async function() {
+    const { starName } = this.meta.methods; 
+    const result = await starName().call(); 
+    const output = document.getElementById("starName");
+    output.innerHTML = result;
   },
 
-  sendCoin: async function() {
-    const amount = parseInt(document.getElementById("amount").value);
-    const receiver = document.getElementById("receiver").value;
+  starOwnerFunc: async function() {
+    const { starOwner } = this.meta.methods;
+    const result = await starOwner().call();
+    const output = document.getElementById("starOwner");
+    output.innerHTML = result;
+  },
 
-    this.setStatus("Initiating transaction... (please wait)");
+  claimStarFunc: async function(){
+    const { claimStar, starOwner } = this.meta.methods;
+    await claimStar().send({from: this.account});
+    const result = await starOwner().call();
+    const output = document.getElementById("claimStar");
+    output.innerHTML = 'New Owner : ' + result;
+  },
 
-    const { sendCoin } = this.meta.methods;
-    await sendCoin(receiver, amount).send({ from: this.account });
-
-    this.setStatus("Transaction complete!");
-    this.refreshBalance();
+  changeNameFunc: async function(){
+    const { changeName, starName } = this.meta.methods;
+    const newName = document.getElementById("newStarName").value;
+    await changeName(newName).send({from : this.account});
+    const result = await starName().call();
+    const output = document.getElementById("newNameValue");
+    output.innerHTML = 'New Name Of Star : ' + result;
   },
 
   setStatus: function(message) {

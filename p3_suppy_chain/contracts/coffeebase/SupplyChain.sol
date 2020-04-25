@@ -1,13 +1,7 @@
 pragma solidity >=0.4.24;
 
-import '../coffeecore/Ownable.sol';
-import '../coffeeaccesscontrol/ConsumerRole.sol';
-import '../coffeeaccesscontrol/DistributorRole.sol';
-import '../coffeeaccesscontrol/FarmerRole.sol';
-import '../coffeeaccesscontrol/RetailerRole.sol';
-
 // Define a contract 'Supplychain'
-contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, RetailerRole{
+contract SupplyChain{
 
   // Define 'Owner'
   address payable Owner;
@@ -21,13 +15,13 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   // Define a public mapping 'items' that maps the UPC to an Item.
   mapping (uint => Item) items;
 
-  // Define a public mapping 'itemsHistory' that maps the UPC to an array of TxHash, 
+  // Define a public mapping 'itemsHistory' that maps the UPC to an array of TxHash,
   // that track its journey through the supply chain -- to be sent from DApp.
   mapping (uint => string[]) itemsHistory;
 
   // Define enum 'State' with the following values:
-  enum State 
-  { 
+  enum State
+  {
     Harvested,  // 0
     Processed,  // 1
     Packed,     // 2
@@ -164,7 +158,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     uint _upc, address _originFarmerID,
     string memory _originFarmName, string memory _originFarmInformation, string memory _originFarmLatitude, string memory _originFarmLongitude, string memory  _productNotes)
     public
-    onlyFarmer
   {
     // Add the new item as part of Harvest
     items[_upc].sku = sku;
@@ -190,7 +183,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   harvested(_upc)
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].OwnerID)
-  onlyFarmer
   {
     // Update the appropriate fields
     items[_upc].itemState = State.Processed;
@@ -204,7 +196,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   processed(_upc)
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].OwnerID)
-  onlyFarmer
   {
     // Update the appropriate fields
     items[_upc].itemState = State.Packed;
@@ -218,7 +209,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   packed(_upc)
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].OwnerID)
-  onlyFarmer
   {
     // Update the appropriate fields
     items[_upc].itemState = State.ForSale;
@@ -237,9 +227,8 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   paidEnough(items[_upc].productPrice)
     // Call modifer to send any excess ether back to buyer
   checkValue(_upc)
-  onlyDistributor
     {
-    
+
     // Update the appropriate fields - OwnerID, distributorID, itemState
     items[_upc].distributorID = msg.sender;
     items[_upc].itemState = State.Sold;
@@ -252,12 +241,11 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
 
   // Define a function 'shipItem' that allows the distributor to mark an item 'Shipped'
   // Use the above modifers to check if the item is sold
-  function shipItem(uint _upc) public 
+  function shipItem(uint _upc) public
     // Call modifier to check if upc has passed previous supply chain stage
   sold(_upc)
     // Call modifier to verify caller of this function
   verifyCaller(items[_upc].OwnerID)
-  onlyDistributor
   {
     // Update the appropriate fields
     items[_upc].itemState = State.Shipped;
@@ -271,7 +259,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     // Call modifier to check if upc has passed previous supply chain stage
   shipped(_upc)
     // Access Control List enforced by calling Smart Contract / DApp
-  onlyRetailer
   {
     // Update the appropriate fields - OwnerID, retailerID, itemState
     items[_upc].OwnerID = msg.sender;
@@ -287,7 +274,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     // Call modifier to check if upc has passed previous supply chain stage
   received(_upc)
     // Access Control List enforced by calling Smart Contract / DApp
-  onlyConsumer
   {
     // Update the appropriate fields - OwnerID, consumerID, itemState
     items[_upc].itemState = State.Purchased;
@@ -298,7 +284,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   }
 
   // Define a function 'fetchItemBufferOne' that fetches the data
-  function fetchItemBufferOne(uint _upc) public view returns 
+  function fetchItemBufferOne(uint _upc) public view returns
   (
   uint    itemSKU,
   uint    itemUPC,
@@ -308,7 +294,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   string  memory originFarmInformation,
   string memory originFarmLatitude,
   string memory originFarmLongitude
-  ) 
+  )
   {
   // Assign values to the 8 parameters
     itemSKU = items[_upc].sku;
@@ -320,8 +306,8 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     originFarmLatitude = items[_upc].originFarmLatitude;
     originFarmLongitude = items[_upc].originFarmLongitude;
 
-    
-  return 
+
+  return
   (
   itemSKU,
   itemUPC,
@@ -335,7 +321,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   }
 
   // Define a function 'fetchItemBufferTwo' that fetches the data
-  function fetchItemBufferTwo(uint _upc) public view returns 
+  function fetchItemBufferTwo(uint _upc) public view returns
   (
   uint    itemSKU,
   uint    itemUPC,
@@ -346,7 +332,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   address distributorID,
   address retailerID,
   address consumerID
-  ) 
+  )
   {
     // Assign values to the 9 parameters
     itemSKU = items[_upc].sku;
@@ -358,9 +344,8 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     distributorID = items[_upc].distributorID;
     retailerID = items[_upc].retailerID;
     consumerID = items[_upc].consumerID;
-  
-    
-  return 
+
+  return
   (
   itemSKU,
   itemUPC,

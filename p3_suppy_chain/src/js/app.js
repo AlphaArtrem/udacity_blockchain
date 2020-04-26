@@ -197,6 +197,8 @@ App = {
         });
     },
 
+    
+
     harvestItem: function(event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
@@ -214,8 +216,8 @@ App = {
         }).then(function(result) {
             const tx = JSON.stringify(result['tx']).toString();
             $("#status").text("Tx ID : " + tx);
-            console.log('harvestItem',result);
             App.addItemHistory(tx);
+            console.log('harvestItem',result);
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
@@ -231,7 +233,9 @@ App = {
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.processItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status-other").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status-other").text("Tx ID : " + tx);
+            App.addItemHistory(tx);
             console.log('processItem',result);
         }).catch(function(err) {
             $("#status-other").text("Error : " + JSON.stringify(err.message));
@@ -248,7 +252,9 @@ App = {
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.packItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status-other").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status-other").text("Tx ID : " + tx);
+            App.addItemHistory(tx);
             console.log('packItem',result);
         }).catch(function(err) {
             $("#status-other").text("Error : " + JSON.stringify(err.message));
@@ -267,7 +273,9 @@ App = {
             console.log('productPrice',productPrice);
             return instance.sellItem(App.upc, App.productPrice, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status-sell").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status-sell").text("Tx ID : " + tx);
+            App.addItemHistory(tx);
             console.log('sellItem',result);
         }).catch(function(err) {
             $("#status-sell").text("Error : " + JSON.stringify(err.message));
@@ -284,7 +292,9 @@ App = {
             const walletValue = web3.toWei(3, "ether");
             return instance.buyItem(App.upc, {from: App.metamaskAccountID, value: walletValue});
         }).then(function(result) {
-            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status").text("Tx ID : " + tx);
+            App.addItemHistory(tx);
             console.log('buyItem',result);
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
@@ -300,7 +310,9 @@ App = {
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.shipItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status").text("Tx ID : " + tx);
+            App.addItemHistory(tx);
             console.log('shipItem',result);
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
@@ -316,7 +328,9 @@ App = {
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.receiveItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status").text("Tx ID : " + tx);
+            App.addItemHistory(tx);
             console.log('receiveItem',result);
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
@@ -332,7 +346,9 @@ App = {
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.purchaseItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status").text("Tx ID : " + tx);
+            App.addItemHistory(tx);
             console.log('purchaseItem',result);
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
@@ -343,13 +359,13 @@ App = {
     fetchItemBufferOne: function () {
     ///   event.preventDefault();
     ///    var processId = parseInt($(event.target).data('id'));
-        App.upc = $('#upc-other').val();
+        App.upc = $('#upc').val();
         console.log('upc',App.upc);
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-          return instance.fetchItemBufferOne(App.upc);
+          return instance.fetchItemBufferOne.call(App.upc);
         }).then(function(result) {
-          $("#status-other").text(JSON.stringify(result));
+          $("#status").text(JSON.stringify(result));
           console.log('fetchItemBufferOne', result);
         }).catch(function(err) {
           console.log(err.message);

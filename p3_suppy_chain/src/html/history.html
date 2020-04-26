@@ -25,7 +25,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="../../src/html/farmers.html">Farmer<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-itema active">
+                <li class="nav-item">
                     <a class="nav-link" href="../../src/html/distributors.html">Distributor<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
@@ -34,8 +34,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="../../src/html/consumers.html">Consumer</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../../src/html/history.html">Check History</a>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../../src/html/history.html">Check History<span class="sr-only">(current)</span></a>
                 </li>
               </ul>
               <form class="form-inline my-2 my-lg-0">
@@ -50,22 +50,32 @@
                     <div class="card-body">         
                         <div class="card text-center">
                             <div class="card-header">
-                            <h1>Change Product State</h1>
+                            <h1>Product History</h1>
                             </div>
                             <div class="card-body">
                             <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <input type="number" class="form-control" id="upc" aria-describedby="emailHelp" placeholder="Enter UPC">
-                                </div>
+                                <form class="form-inline my-2 my-lg-0">
+                                    <input class="form-control mr-sm-2" type="number" placeholder="History By UPC" aria-label="Search" id="upc">
+                                    <button class="btn btn-primary" type="submit" onclick="App.getItemHistory()">Get History</button>
+                                </form>
                             </div>
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <button class="btn btn-primary" data-id="5">Buy Product</button>
-                                </div>
-                                <div class="col">
-                                    <button class="btn btn-primary" data-id="6">Ship Product</button>
-                                </div>
-                            </div>
+                            <br>
+                            <table class="table" style="display: none;">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Transaction Type</th>
+                                    <th scope="col">Transaction ID</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <th scope="row">1</th>
+                                    <td></td>
+                                    <td></td>
+                                  </tr>
+                                </tbody>
+                              </table>
                             </div>
                             <div class="card-footer text-muted">
                             <span id="status"></span>

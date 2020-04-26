@@ -211,13 +211,16 @@ App = {
     processItem: function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
+        App.upc = $('#upc-other').val();
+        console.log('upc',App.upc, App.metamaskAccountID);
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.processItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status-other").text("Tx ID : ", JSON.stringify(result['tx']));
             console.log('processItem',result);
         }).catch(function(err) {
+            $("#status-other").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },
@@ -225,13 +228,16 @@ App = {
     packItem: function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
+        App.upc = $('#upc-other').val();
+        console.log('upc',App.upc, App.metamaskAccountID);
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.packItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status-other").text("Tx ID : ", JSON.stringify(result));
             console.log('packItem',result);
         }).catch(function(err) {
+            $("#status-other").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },
@@ -312,13 +318,13 @@ App = {
     fetchItemBufferOne: function () {
     ///   event.preventDefault();
     ///    var processId = parseInt($(event.target).data('id'));
-        App.upc = $('#upc').val();
+        App.upc = $('#upc-other').val();
         console.log('upc',App.upc);
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
           return instance.fetchItemBufferOne(App.upc);
         }).then(function(result) {
-          $("#ftc-item").text(result);
+          $("#status-other").text(JSON.stringify(result));
           console.log('fetchItemBufferOne', result);
         }).catch(function(err) {
           console.log(err.message);

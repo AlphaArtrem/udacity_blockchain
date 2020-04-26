@@ -81,7 +81,7 @@
                             </div>
                             <div class=" row justify-content-md-center">
                                 <div class="col">
-                                    <input type="text" class="form-control" id="sku" aria-describedby="emailHelp" placeholder="Enter SKU">
+                                    <input type="text" class="form-control" id="upc" aria-describedby="emailHelp" placeholder="Enter UPC">
                                 </div>
                                 <div class="col">
                                     <input type="text" class="form-control" id="originFarmLatitude" aria-describedby="emailHelp" placeholder="Enter Far Latitude">
@@ -121,16 +121,16 @@
                             <div class="card-body">
                             <div class=" row justify-content-md-center">
                                 <div class="col">
-                                    <input type="number" class="form-control" id="sku" aria-describedby="emailHelp" placeholder="Enter SKU">
+                                    <input type="number" class="form-control" id="upc-sell" aria-describedby="emailHelp" placeholder="Enter UPC">
                                 </div>
                                 <div class="col">
-                                    <input type="number" class="form-control" id="productPrice" aria-describedby="emailHelp" placeholder="Enter Farm Longitude">
+                                    <input type="number" class="form-control" id="productPrice-sell" aria-describedby="emailHelp" placeholder="Enter Farm Longitude">
                                 </div>
                             </div>
                             <button class="btn btn-primary" data-id="1">Sell</button>
                             </div>
                             <div class="card-footer text-muted">
-                            <span id="status"></span>
+                            <span id="status-sell"></span>
                             </div>
                         </div>
                     </div>
@@ -148,26 +148,27 @@
                             <div class="card-body">
                             <div class=" row justify-content-md-center">
                                 <div class="col">
-                                    <input type="number" class="form-control" id="upc" aria-describedby="emailHelp" placeholder="Enter UPC">
+                                    <input type="number" class="form-control" id="upc-other" aria-describedby="emailHelp" placeholder="Enter UPC">
                                 </div>
                             </div>
                             <div class=" row justify-content-md-center">
                                 <div class="col">
-                                    <button class="btn btn-primary" data-id="1">Process</button>
+                                    <button class="btn btn-primary" data-id="2">Process</button>
                                 </div>
                                 <div class="col">
-                                    <button class="btn btn-primary" data-id="1">Pack</button>
+                                    <button class="btn btn-primary" data-id="3">Pack</button>
                                 </div>
                             </div>
                             </div>
                             <div class="card-footer text-muted">
-                            <span id="status"></span>
+                            <span id="status-other"></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div id="info"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <!-- <script src="js/web3.min.js"></script> -->
         <script src="../js/truffle-contract.js"></script>

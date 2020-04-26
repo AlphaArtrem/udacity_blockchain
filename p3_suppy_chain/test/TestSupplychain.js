@@ -300,5 +300,14 @@ contract('SupplyChain', function(accounts) {
         
     })
 
+    // 11th test
+    it("Testing if itemHistory() is being recorded properly", async() => {
+        const supplyChain = await SupplyChain.deployed()
+        await supplyChain.addItemHistory(upc, "abc")
+
+         // Verify the result set
+        assert.equal(await supplyChain.getItemHistory.call(upc), "abc", 'Error: Item History not match')
+    })  
+
 });
 

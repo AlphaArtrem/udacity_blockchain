@@ -184,11 +184,23 @@ App = {
             }
     },
 
+    addItemHistory: function(tx) {
+        App.contracts.SupplyChain.deployed().then(function (instance){
+            console.log("TO BE ADDED" + tx + App.upc);
+            return instance.addItemHistory(App.upc, tx);
+        }).then(function(result) {
+            $("#status-2").text("Added to history");
+            console.log('addedHistoryItem',result);
+        }).catch(function(err) {
+            $("#status-2").text("Error : " + JSON.stringify(err.message));
+            console.log(err.message);
+        });
+    },
+
     harvestItem: function(event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
         App.readForm();
-
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.harvestItem(
                 App.upc, 
@@ -200,8 +212,10 @@ App = {
                 App.productNotes
             );
         }).then(function(result) {
-            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
+            const tx = JSON.stringify(result['tx']).toString();
+            $("#status").text("Tx ID : " + tx);
             console.log('harvestItem',result);
+            App.addItemHistory(tx);
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);

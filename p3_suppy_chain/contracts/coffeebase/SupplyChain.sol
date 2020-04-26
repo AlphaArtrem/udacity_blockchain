@@ -21,13 +21,13 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   // Define a public mapping 'items' that maps the UPC to an Item.
   mapping (uint => Item) items;
 
-  // Define a public mapping 'itemsHistory' that maps the UPC to an array of TxHash, 
+  // Define a public mapping 'itemsHistory' that maps the UPC to an array of TxHash,
   // that track its journey through the supply chain -- to be sent from DApp.
-  mapping (uint => string[]) itemsHistory;
+  mapping (uint => string[7]) itemsHistory;
 
   // Define enum 'State' with the following values:
-  enum State 
-  { 
+  enum State
+  {
     Harvested,  // 0
     Processed,  // 1
     Packed,     // 2
@@ -157,6 +157,20 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     if (msg.sender == Owner){
       selfdestruct(Owner);
     }
+  }
+
+  //uint public abc;
+  //string public txid;
+  function addItemHistory(uint _upc, string memory _tx) public{
+    //abc = _upc;
+    //txid = _tx;
+    uint index = uint(items[_upc].itemState);
+    itemsHistory[_upc][index] = _tx;
+  }
+
+  function getItemHistory(uint _upc) public view returns(string memory){
+    uint index = uint(items[_upc].itemState);
+    return itemsHistory[_upc][index];
   }
 
   // Define a function 'harvestItem' that allows a farmer to mark an item 'Harvested'

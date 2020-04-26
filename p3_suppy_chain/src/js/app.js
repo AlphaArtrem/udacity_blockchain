@@ -313,13 +313,15 @@ App = {
     purchaseItem: function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
+        App.upc = $('#upc').val();
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.purchaseItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('purchaseItem',result);
         }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },
@@ -375,7 +377,6 @@ App = {
         
     }
 };
-//app.use(express.static(__dirname));
 $(function () {
     $(window).load(function () {
         App.init();

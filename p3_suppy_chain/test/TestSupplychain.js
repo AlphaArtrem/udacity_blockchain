@@ -69,7 +69,8 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[6], originFarmLatitude, 'Error: Missing or Invalid originFarmLatitude')
         assert.equal(resultBufferOne[7], originFarmLongitude, 'Error: Missing or Invalid originFarmLongitude')
         assert.equal(resultBufferTwo[5], 0, 'Error: Invalid item State')
-        assert.equal(eventEmitted, true, 'Invalid event emitted')        
+        assert.equal(eventEmitted, true, 'Invalid event emitted')
+        await supplyChain.addItemHistory(upc, "anyTxIdForHarvested")        
     })    
 
     // 2nd Test
@@ -95,6 +96,7 @@ contract('SupplyChain', function(accounts) {
 
          // Verify the result set
         assert.equal(resultBufferTwo[5], 1, 'Error: Invalid item State')
+        await supplyChain.addItemHistory(upc, "anyTxIdForProcessed")
     })    
 
     // 3rd Test
@@ -119,6 +121,7 @@ contract('SupplyChain', function(accounts) {
 
         // Verify the result set
         assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State')
+        await supplyChain.addItemHistory(upc, "anyTxIdForPacked")
         
     })    
 
@@ -145,7 +148,7 @@ contract('SupplyChain', function(accounts) {
         // Verify the result set
         assert.equal(resultBufferTwo[4], productPrice, "Error: Invalid item Price")
         assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State')
-          
+        await supplyChain.addItemHistory(upc, "anyTxIdForSold")          
     })    
 
     // 5th Test
@@ -174,7 +177,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[2], distributorID, "Error: Invalid owner.")
         assert.equal(resultBufferTwo[6], distributorID, "Error: Invalid distributor.")
         assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State')
-        
+        await supplyChain.addItemHistory(upc, "anyTxIdForBought")        
     })    
 
     // 6th Test
@@ -200,7 +203,7 @@ contract('SupplyChain', function(accounts) {
 
         // Verify the result set
         assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State')
-              
+        await supplyChain.addItemHistory(upc, "anyTxIdForShipped")              
     })    
 
     // 7th Test
@@ -229,7 +232,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[2], retailerID, "Error: Invalid owner.")
         assert.equal(resultBufferTwo[7], retailerID, "Error: Invalid retailer.")
         assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State')
-             
+        await supplyChain.addItemHistory(upc, "anyTxIdForReceived")   
     })    
 
     // 8th Test
@@ -258,6 +261,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[2], consumerID, "Error: Invalid owner.")
         assert.equal(resultBufferTwo[8], consumerID, "Error: Invalid consumer.")
         assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State')
+        await supplyChain.addItemHistory(upc, "anyTxIdForPurchased")
         
     })    
 
@@ -303,10 +307,18 @@ contract('SupplyChain', function(accounts) {
     // 11th test
     it("Testing if itemHistory() is being recorded properly", async() => {
         const supplyChain = await SupplyChain.deployed()
-        await supplyChain.addItemHistory(upc, "abc")
+        const historyOne  = await supplyChain.getItemHistoryOne.call(upc);
+        const historyTwo  = await supplyChain.getItemHistoryTwo.call(upc);
 
          // Verify the result set
-        assert.equal(await supplyChain.getItemHistory.call(upc), "abc", 'Error: Item History not match')
+        assert.equal(historyOne[0], "anyTxIdForHarvested", 'Error: Item History not match')
+        assert.equal(historyOne[1], "anyTxIdForProcessed", 'Error: Item History not match')
+        assert.equal(historyOne[2], "anyTxIdForPacked", 'Error: Item History not match')
+        assert.equal(historyOne[3], "anyTxIdForSold", 'Error: Item History not match')
+        assert.equal(historyTwo[0], "anyTxIdForBought", 'Error: Item History not match')
+        assert.equal(historyTwo[1], "anyTxIdForShipped", 'Error: Item History not match')
+        assert.equal(historyTwo[2], "anyTxIdForReceived", 'Error: Item History not match')
+        assert.equal(historyTwo[3], "anyTxIdForPurchased", 'Error: Item History not match')
     })  
 
 });

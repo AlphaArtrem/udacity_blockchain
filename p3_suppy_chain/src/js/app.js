@@ -297,13 +297,15 @@ App = {
     receiveItem: function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
+        App.upc = $('#upc').val();
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.receiveItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('receiveItem',result);
         }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },

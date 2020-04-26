@@ -1,59 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fair Trade Coffee</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fair Trade Coffee</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
 
-<body>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="index.html">Fair Trade Coffee</a>
-        <form class="form-inline">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search By UPC" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </nav>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="../../index.html">Fair Trade Coffee</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="src/html/farmers.html">Farmer</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="src/html/distributors.html">Distributor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="src/html/retailers.html">Retailer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="src/html/consumers.html">Consumer</a>
+                </li>
+              </ul>
+              <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search By UPC" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+            </div>
+        </nav>
 
-    <div class="row justify-content-md-center" style="margin: 10% 10% 10% 10%; text-align: center;">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Farmers Portal</h5>
-              <p class="card-text">Add New or Modify existing Product.</p>
-              <a href="#" class="btn btn-outline-success my-2 my-sm-0">Farmers Portal</a>
+        <div class="row justify-content-md-center" style="margin: 15% 15% 15% 15%; text-align: center;">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                <h5 class="card-title">Farmers Portal</h5>
+                <p class="card-text">Add New or Modify existing Product.</p>
+                <a href="src/html/farmers.html" class="btn btn-outline-success my-2 my-sm-0">Farmers Portal</a>
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                <h5 class="card-title">Distributor Portal</h5>
+                <p class="card-text">Buy for sale item or ship your product.</p>
+                <a href="src/html/distributors.html" class="btn btn-outline-success my-2 my-sm-0">Distributor Portal</a>
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                <h5 class="card-title">Retailer Portal</h5>
+                <p class="card-text">Mark a prodcut recieved from distributor.</p>
+                <a href="src/html/retailers.html" class="btn btn-outline-success my-2 my-sm-0">Retailer Portal</a>
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                <h5 class="card-title">Consumer Portal</h5>
+                <p class="card-text">Mark a product purchased from retailer.</p>
+                <a href="src/html/consumers.html" class="btn btn-outline-success my-2 my-sm-0">Consumer Portal</a>
+                </div>
             </div>
         </div>
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Distributor Portal</h5>
-              <p class="card-text">Buy for sale item or ship your product.</p>
-              <a href="#" class="btn btn-outline-success my-2 my-sm-0">Distributor Portal</a>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Retailer Portal</h5>
-              <p class="card-text">Mark an item recived from distributor.</p>
-              <a href="#" class="btn btn-outline-success my-2 my-sm-0">Retailer Portal</a>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Consumer Portal</h5>
-              <p class="card-text">Mark an item as purchased from retailer.</p>
-              <a href="#" class="btn btn-outline-success my-2 my-sm-0">Retailer Portal</a>
-            </div>
-        </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- <script src="js/web3.min.js"></script> -->
-    <script src="js/truffle-contract.js"></script>
-    <script src="js/app.js"></script>
-</body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <!-- <script src="js/web3.min.js"></script> -->
+        <script src="js/truffle-contract.js"></script>
+        <script src="js/app.js"></script>
+    </body>
 
 </html>
-

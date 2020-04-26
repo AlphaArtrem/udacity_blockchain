@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Farmers Portal</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="../../style.css">
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="../../index.html">Fair Trade Coffee</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="../../index.html">Home<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Farmer<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../../distributors.html">Distributor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../../retailers.html">Retailer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../../consumers.html">Consumer</a>
+                </li>
+              </ul>
+              <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search By UPC" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+            </div>
+          </nav>
+
+        <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">
+                <h5 class="card-title">Add Product</h5>
+                <button onclick="App.addProductForm()" class="btn btn-outline-success my-2 my-sm-0">Harvest</button>
+                </div>
+            </div>
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">
+                <h5 class="card-title">Sell Product</h5>
+                <button onclick="App.sellProductForm()" class="btn btn-outline-success my-2 my-sm-0">Sell</button>
+                </div>
+            </div>
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">
+                <h5 class="card-title">Other Actions</h5>
+                <button onclick="App.modifyProductForm()" class="btn btn-outline-success my-2 my-sm-0">Others</button>
+                </div>
+            </div>
+        </div>
+        <div id="role-action-add" style="display: none;">
+            <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
+                <div class="card col" style="width: 18rem;">
+                    <div class="card-body">         
+                        <div class="card text-center">
+                            <div class="card-header">
+                            <h1>Add Product</h1>
+                            </div>
+                            <div class="card-body">
+                            <div class=" row justify-content-md-center">
+                                <div class="col">
+                                    <input type="text" class="form-control" id="originFarmerID" aria-describedby="emailHelp" placeholder="Enter Farmer ID">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" id="originFarmName" aria-describedby="emailHelp" placeholder="Enter Farmer Name">
+                                </div>
+                            </div>
+                            <div class=" row justify-content-md-center">
+                                <div class="col">
+                                    <input type="number" class="form-control" id="sku" aria-describedby="emailHelp" placeholder="Enter SKU">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" id="originFarmLatitude" aria-describedby="emailHelp" placeholder="Enter Far Latitude">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" id="originFarmLongitude" aria-describedby="emailHelp" placeholder="Enter Farm Longitude">
+                                </div>
+                            </div>
+                            <div class=" row justify-content-md-center">
+                                <div class="col">
+                                    <input type="text" class="form-control" id="originFarmInformation" aria-describedby="emailHelp" placeholder="Enter Farm Information">
+                                </div>
+                            </div>
+                            <div class=" row justify-content-md-center">
+                                <div class="col">
+                                    <input type="text" class="form-control" id="productNotes" aria-describedby="emailHelp" placeholder="Enter Product Notes">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" data-id="1">Harvest</button>
+                            </div>
+                            <div class="card-footer text-muted">
+                            <span id="status"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="role-action-sell" style="display: none;">
+            <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
+                <div class="card col" style="width: 18rem;">
+                    <div class="card-body">         
+                        <div class="card text-center">
+                            <div class="card-header">
+                            <h1>Sell Product</h1>
+                            </div>
+                            <div class="card-body">
+                            <div class=" row justify-content-md-center">
+                                <div class="col">
+                                    <input type="number" class="form-control" id="sku" aria-describedby="emailHelp" placeholder="Enter SKU">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" id="productPrice" aria-describedby="emailHelp" placeholder="Enter Farm Longitude">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" data-id="1">Sell</button>
+                            </div>
+                            <div class="card-footer text-muted">
+                            <span id="status"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="role-action-farmer" style="display: none;">
+            <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
+                <div class="card col" style="width: 18rem;">
+                    <div class="card-body">         
+                        <div class="card text-center">
+                            <div class="card-header">
+                            <h1>Change Product State</h1>
+                            </div>
+                            <div class="card-body">
+                            <div class=" row justify-content-md-center">
+                                <div class="col">
+                                    <input type="number" class="form-control" id="sku" aria-describedby="emailHelp" placeholder="Enter SKU">
+                                </div>
+                            </div>
+                            <div class=" row justify-content-md-center">
+                                <div class="col">
+                                    <button class="btn btn-primary" data-id="1">Process</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-primary" data-id="1">Pack</button>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                            <span id="status"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- <script src="js/web3.min.js"></script> -->
+        <script src="../js/truffle-contract.js"></script>
+        <script src="../js/app.js"></script>
+    </body>
+
+</html>

@@ -117,6 +117,26 @@ App = {
         return App.bindEvents();
     },
 
+    addProductForm: function(){
+        document.getElementById('role-action-add').style.display = 'block';
+        document.getElementById('role-action-sell').style.display = 'none';
+        document.getElementById('role-action-fermer').style.display = 'none';
+        document.getElementById('originFarmerID').value = App.getMetaskAccountID();
+    },
+
+    sellProductForm: function(){
+        document.getElementById('role-action-add').style.display = 'none';
+        document.getElementById('role-action-sell').style.display = 'block';
+        document.getElementById('role-action-farmer').style.display = 'none';
+    },
+
+    modifyProductForm: function(){
+        document.getElementById('role-action-add').style.display = 'none';
+        document.getElementById('role-action-sell').style.display = 'none';
+        document.getElementById('role-action-farmer').style.display = 'block';
+    },
+
+
     bindEvents: function() {
         $(document).on('click', App.handleButtonClick);
     },

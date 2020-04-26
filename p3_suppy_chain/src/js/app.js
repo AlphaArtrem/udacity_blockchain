@@ -120,8 +120,9 @@ App = {
     addProductForm: function(){
         document.getElementById('role-action-add').style.display = 'block';
         document.getElementById('role-action-sell').style.display = 'none';
-        document.getElementById('role-action-fermer').style.display = 'none';
-        document.getElementById('originFarmerID').value = App.getMetaskAccountID();
+        document.getElementById('role-action-farmer').style.display = 'none';
+        App.getMetaskAccountID()
+        document.getElementById('originFarmerID').value = App.metamaskAccountID;
     },
 
     sellProductForm: function(){
@@ -186,6 +187,7 @@ App = {
     harvestItem: function(event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
+        App.readForm();
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.harvestItem(
@@ -198,9 +200,10 @@ App = {
                 App.productNotes
             );
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status").text("Tx ID : ", JSON.stringify(result['tx']));
             console.log('harvestItem',result);
         }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },

@@ -200,7 +200,7 @@ App = {
                 App.productNotes
             );
         }).then(function(result) {
-            $("#status").text("Tx ID : ", JSON.stringify(result['tx']));
+            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('harvestItem',result);
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
@@ -217,7 +217,7 @@ App = {
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.processItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status-other").text("Tx ID : ", JSON.stringify(result['tx']));
+            $("#status-other").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('processItem',result);
         }).catch(function(err) {
             $("#status-other").text("Error : " + JSON.stringify(err.message));
@@ -234,7 +234,7 @@ App = {
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.packItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#status-other").text("Tx ID : ", JSON.stringify(result));
+            $("#status-other").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('packItem',result);
         }).catch(function(err) {
             $("#status-other").text("Error : " + JSON.stringify(err.message));
@@ -245,15 +245,18 @@ App = {
     sellItem: function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
+        App.upc = $('#upc-sell').val();
+        App.productPrice = $('#productPrice-sell').val();
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
             const productPrice = web3.toWei(1, "ether");
             console.log('productPrice',productPrice);
             return instance.sellItem(App.upc, App.productPrice, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status-sell").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('sellItem',result);
         }).catch(function(err) {
+            $("#status-sell").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },

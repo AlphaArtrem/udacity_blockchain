@@ -107,10 +107,6 @@ App = {
             var SupplyChainArtifact = data;
             App.contracts.SupplyChain = TruffleContract(SupplyChainArtifact);
             App.contracts.SupplyChain.setProvider(App.web3Provider);
-            
-            App.fetchItemBufferOne();
-            App.fetchItemBufferTwo();
-            App.fetchEvents();
 
         });
 
@@ -190,14 +186,54 @@ App = {
             return instance.addItemHistory(App.upc, tx);
         }).then(function(result) {
             $("#status-2").text("Added to history");
+            $("#status-sell-2").text("Added to history");
+            $("#status-other-2").text("Added to history");
             console.log('addedHistoryItem',result);
         }).catch(function(err) {
             $("#status-2").text("Error : " + JSON.stringify(err.message));
+            $("#status-sell-2").text("Error : " + JSON.stringify(err.message));
+            $("#status-other-2").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },
 
     
+    getItemHistory: function() {
+        const historyOne = ['Harvested', 'Processed', 'Packed', 'Sold'];
+        const historyTwo = ['Bought', 'Shipped', 'Recieved', 'Purchased']
+
+        App.upc = $('#upc').val();
+        console.log(App.upc);
+
+        App.contracts.SupplyChain.deployed().then(function (instance){
+            return instance.getItemHistoryOne.call(App.upc);
+        }).then(function(result) {
+            console.log('addedHistoryItem',result);
+            document.getElementById('history').style.display = 'table';
+            for(var i = 0 ; i < result.length; i++){
+                if(result[i].length > 0){
+                    $("#history-logs").append('<tr>' + "<th scope='row'>" + (i + 1) + '</th>' +'<td>' + historyOne[i] + '</td>' + '<td>' + result[i] + '</td>' + '</tr>');
+                }
+            }
+        }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
+            console.log(err.message);
+        });
+
+        App.contracts.SupplyChain.deployed().then(function (instance){
+            return instance.getItemHistoryTwo.call(App.upc);
+        }).then(function(result) {
+            console.log('addedHistoryItem',result);
+            for(var i = 0 ; i < result.length; i++){
+                if(result[i].length > 0){
+                    $("#history-logs").append('<tr>' + "<th scope='row'>" + (i + 5) + '</th>' +'<td>' + historyTwo[i] + '</td>' + '<td>' + result[i] + '</td>' + '</tr>');
+                }
+            }
+        }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
+            console.log(err.message);
+        });
+    },
 
     harvestItem: function(event) {
         event.preventDefault();
@@ -385,27 +421,6 @@ App = {
           console.log(err.message);
         });
     },
-
-    fetchEvents: function () {
-        if (typeof App.contracts.SupplyChain.currentProvider.sendAsync !== "function") {
-            App.contracts.SupplyChain.currentProvider.sendAsync = function () {
-                return App.contracts.SupplyChain.currentProvider.send.apply(
-                App.contracts.SupplyChain.currentProvider,
-                    arguments
-              );
-            };
-        }
-
-        App.contracts.SupplyChain.deployed().then(function(instance) {
-        var events = instance.allEvents(function(err, log){
-          if (!err)
-            $("#ftc-events").append('<li>' + log.event + ' - ' + log.transactionHash + '</li>');
-        });
-        }).catch(function(err) {
-          console.log(err.message);
-        });
-        
-    }
 };
 $(function () {
     $(window).load(function () {

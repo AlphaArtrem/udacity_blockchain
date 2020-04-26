@@ -264,14 +264,16 @@ App = {
     buyItem: function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
-
+        App.upc = $('#upc').val();
+        
         App.contracts.SupplyChain.deployed().then(function(instance) {
             const walletValue = web3.toWei(3, "ether");
             return instance.buyItem(App.upc, {from: App.metamaskAccountID, value: walletValue});
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('buyItem',result);
         }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },
@@ -279,13 +281,15 @@ App = {
     shipItem: function (event) {
         event.preventDefault();
         var processId = parseInt($(event.target).data('id'));
+        App.upc = $('#upc').val();
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
             return instance.shipItem(App.upc, {from: App.metamaskAccountID});
         }).then(function(result) {
-            $("#ftc-item").text(result);
+            $("#status").text("Tx ID : " + JSON.stringify(result['tx']));
             console.log('shipItem',result);
         }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
     },
@@ -369,7 +373,7 @@ App = {
         
     }
 };
-
+//app.use(express.static(__dirname));
 $(function () {
     $(window).load(function () {
         App.init();

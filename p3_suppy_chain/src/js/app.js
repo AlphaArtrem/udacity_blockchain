@@ -171,12 +171,6 @@ App = {
             case 8:
                 return await App.purchaseItem(event);
                 break;
-            case 9:
-                return await App.fetchItemBufferOne(event);
-                break;
-            case 10:
-                return await App.fetchItemBufferTwo(event);
-                break;
             }
     },
 
@@ -233,6 +227,74 @@ App = {
             $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
         });
+    },
+
+   
+    searchResult: function(){
+        const searchOne = ['SKU', 'UPC', 'Owner ID', 'Origin Farmer ID', 'Origin Farmer Name', 'Origin Farm Info', 'Origin Farm Latitude', 'Origin Farm Longitude']
+        const searchTwo = ['Product ID', 'Prodcut Notes', 'Porduct Price', 'Item State', 'Distributor ID', 'Retailer ID', 'Consumer ID'];
+
+        App.contracts.SupplyChain.deployed().then(function (instance){
+            return  instance.fetchItemBufferOne.call(App.upc);
+        }).then(function(result) {
+            console.log('searchResult',result);
+            document.getElementById('search').style.display = 'table';
+            for(var i = 0 ; i < result.length; i++){
+                if(i < 2){
+                    $("#search-logs").append('<tr>' + "<th scope='row'>" + (i + 1) + '</th>' +'<td>' + searchOne[i] + '</td>' + '<td>' + result[i]['c'] + '</td>' + '</tr>'); 
+                }
+                else if(result[i].length > 0){
+                    $("#search-logs").append('<tr>' + "<th scope='row'>" + (i + 1) + '</th>' +'<td>' + searchOne[i] + '</td>' + '<td>' + result[i] + '</td>' + '</tr>');
+                }
+            }
+        }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
+            console.log(err.message);   
+        });
+
+        App.contracts.SupplyChain.deployed().then(function (instance){
+            return  instance.fetchItemBufferTwo.call(App.upc);
+        }).then(function(result) {
+            console.log('searchResult',result);
+            document.getElementById('search').style.display = 'table';
+            for(var i = 2 ; i < result.length; i++){
+                if(i == 2 || i == 4 || i == 5){
+                    $("#search-logs").append('<tr>' + "<th scope='row'>" + (i + 6) + '</th>' +'<td>' + searchTwo[i - 2] + '</td>' + '<td>' + result[i]['c'] + '</td>' + '</tr>'); 
+                }
+                else if(result[i].length > 0){
+                    $("#search-logs").append('<tr>' + "<th scope='row'>" + (i + 6) + '</th>' +'<td>' + searchTwo[i - 2] + '</td>' + '<td>' + result[i] + '</td>' + '</tr>');
+                }
+            }
+        }).catch(function(err) {
+            $("#status").text("Error : " + JSON.stringify(err.message));
+            console.log(err.message);   
+        });
+    },
+
+
+    search: function(){
+        App.upc = $('#search').val();
+
+        document.getElementById('body').innerHTML = '<div class="card col" style="width: 18rem;"> <div class="card-body"> <div class="card text-center"> <div class="card-header"> <h1>Search Result</h1> </div> <div class="card-body"> <br> <table id="search" class="table" style="display: table;"> <thead class="thead-dark"> <tr> <th scope="col">#</th> <th scope="col">Transaction Type</th> <th scope="col">Transaction ID</th> </tr> </thead> <tbody id="search-logs"> </tbody> </table> </div> <div class="card-footer text-muted"> <span id="status"></span> <br> <span id="status-2"></span> </div> </div> </div> </div> </div>';
+        App.searchResult();
+    },
+    home: function(){
+        window.location.href = window.location.origin + "/index.html";
+    },
+    farmers: function(){
+        window.location.href = window.location.origin + "/src/html/farmers.html";
+    },
+    retailers: function(){
+        window.location.href = window.location.origin + "/src/html/retailers.html";
+    },
+    history: function(){
+        window.location.href = window.location.origin + "/src/html/history.html";
+    },
+    distributors: function(){
+        window.location.href = window.location.origin + "/src/html/distributors.html";
+    },
+    consumers: function(){
+        window.location.href = window.location.origin + "/src/html/consumers.html";
     },
 
     harvestItem: function(event) {
@@ -422,8 +484,9 @@ App = {
         });
     },
 };
+
 $(function () {
-    $(window).load(function () {
+    $(window).on('load', function () {
         App.init();
     });
 });

@@ -46,137 +46,138 @@
           </nav>
 
         <div id="body" class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
-            <div class="card col" style="width: 18rem;">
-                <div class="card-body">
-                <h5 class="card-title">Add Product</h5>
-                <button onclick="App.addProductForm()" class="btn btn-outline-success my-2 my-sm-0">Harvest</button>
-                </div>
-            </div>
-            <div class="card col" style="width: 18rem;">
-                <div class="card-body">
-                <h5 class="card-title">Sell Product</h5>
-                <button onclick="App.sellProductForm()" class="btn btn-outline-success my-2 my-sm-0">Sell</button>
-                </div>
-            </div>
-            <div class="card col" style="width: 18rem;">
-                <div class="card-body">
-                <h5 class="card-title">Other Actions</h5>
-                <button onclick="App.modifyProductForm()" class="btn btn-outline-success my-2 my-sm-0">Others</button>
-                </div>
-            </div>
-        </div>
-        <div id="role-action-add" style="display: none;">
             <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
                 <div class="card col" style="width: 18rem;">
-                    <div class="card-body">         
-                        <div class="card text-center">
-                            <div class="card-header">
-                            <h1>Add Product</h1>
+                    <div class="card-body">
+                    <h5 class="card-title">Add Product</h5>
+                    <button onclick="App.addProductForm()" class="btn btn-outline-success my-2 my-sm-0">Harvest</button>
+                    </div>
+                </div>
+                <div class="card col" style="width: 18rem;">
+                    <div class="card-body">
+                    <h5 class="card-title">Sell Product</h5>
+                    <button onclick="App.sellProductForm()" class="btn btn-outline-success my-2 my-sm-0">Sell</button>
+                    </div>
+                </div>
+                <div class="card col" style="width: 18rem;">
+                    <div class="card-body">
+                    <h5 class="card-title">Other Actions</h5>
+                    <button onclick="App.modifyProductForm()" class="btn btn-outline-success my-2 my-sm-0">Others</button>
+                    </div>
+                </div>
+            </div>
+            <div id="role-action-add" style="display: none;">
+                <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
+                    <div class="card col" style="width: 18rem;">
+                        <div class="card-body">         
+                            <div class="card text-center">
+                                <div class="card-header">
+                                <h1>Add Product</h1>
+                                </div>
+                                <div class="card-body">
+                                <div class=" row justify-content-md-center">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="originFarmerID" aria-describedby="emailHelp" placeholder="Enter Farmer ID">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="originFarmName" aria-describedby="emailHelp" placeholder="Enter Farmer Name">
+                                    </div>
+                                </div>
+                                <div class=" row justify-content-md-center">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="upc" aria-describedby="emailHelp" placeholder="Enter UPC">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="originFarmLatitude" aria-describedby="emailHelp" placeholder="Enter Far Latitude">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="originFarmLongitude" aria-describedby="emailHelp" placeholder="Enter Farm Longitude">
+                                    </div>
+                                </div>
+                                <div class=" row justify-content-md-center">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="originFarmInformation" aria-describedby="emailHelp" placeholder="Enter Farm Information">
+                                    </div>
+                                </div>
+                                <div class=" row justify-content-md-center">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="productNotes" aria-describedby="emailHelp" placeholder="Enter Product Notes">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" data-id="1">Harvest</button>
+                                </div>
+                                <div class="card-footer text-muted">
+                                <span id="status"></span>
+                                <br>
+                                <span id="status-2"></span>
+                                </div>
                             </div>
-                            <div class="card-body">
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <input type="text" class="form-control" id="originFarmerID" aria-describedby="emailHelp" placeholder="Enter Farmer ID">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="role-action-sell" style="display: none;">
+                <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
+                    <div class="card col" style="width: 18rem;">
+                        <div class="card-body">         
+                            <div class="card text-center">
+                                <div class="card-header">
+                                <h1>Sell Product</h1>
                                 </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" id="originFarmName" aria-describedby="emailHelp" placeholder="Enter Farmer Name">
+                                <div class="card-body">
+                                <div class=" row justify-content-md-center">
+                                    <div class="col">
+                                        <input type="number" class="form-control" id="upc-sell" aria-describedby="emailHelp" placeholder="Enter UPC">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" class="form-control" id="productPrice-sell" aria-describedby="emailHelp" placeholder="Enter Product Price">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <input type="text" class="form-control" id="upc" aria-describedby="emailHelp" placeholder="Enter UPC">
+                                <button class="btn btn-primary" data-id="4">Mark For Sell</button>
                                 </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" id="originFarmLatitude" aria-describedby="emailHelp" placeholder="Enter Far Latitude">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" id="originFarmLongitude" aria-describedby="emailHelp" placeholder="Enter Farm Longitude">
-                                </div>
-                            </div>
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <input type="text" class="form-control" id="originFarmInformation" aria-describedby="emailHelp" placeholder="Enter Farm Information">
-                                </div>
-                            </div>
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <input type="text" class="form-control" id="productNotes" aria-describedby="emailHelp" placeholder="Enter Product Notes">
+                                <div class="card-footer text-muted">
+                                <span id="status-sell"></span>
+                                <span id="status-sell-2"></span>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" data-id="1">Harvest</button>
-                            </div>
-                            <div class="card-footer text-muted">
-                            <span id="status"></span>
-                            <br>
-                            <span id="status-2"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="role-action-farmer" style="display: none;">
+                <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
+                    <div class="card col" style="width: 18rem;">
+                        <div class="card-body">         
+                            <div class="card text-center">
+                                <div class="card-header">
+                                <h1>Change Product State</h1>
+                                </div>
+                                <div class="card-body">
+                                <div class=" row justify-content-md-center">
+                                    <div class="col">
+                                        <input type="number" class="form-control" id="upc-other" aria-describedby="emailHelp" placeholder="Enter UPC">
+                                    </div>
+                                </div>
+                                <div class=" row justify-content-md-center">
+                                    <div class="col">
+                                        <button class="btn btn-primary" data-id="2">Mark Processed</button>
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn btn-primary" data-id="3">Mark Packed</button>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="card-footer text-muted">
+                                <span id="status-other"></span>
+                                <br>
+                                <span id="status-other-2"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="role-action-sell" style="display: none;">
-            <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
-                <div class="card col" style="width: 18rem;">
-                    <div class="card-body">         
-                        <div class="card text-center">
-                            <div class="card-header">
-                            <h1>Sell Product</h1>
-                            </div>
-                            <div class="card-body">
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <input type="number" class="form-control" id="upc-sell" aria-describedby="emailHelp" placeholder="Enter UPC">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" id="productPrice-sell" aria-describedby="emailHelp" placeholder="Enter Product Price">
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" data-id="4">Mark For Sell</button>
-                            </div>
-                            <div class="card-footer text-muted">
-                            <span id="status-sell"></span>
-                            <span id="status-sell-2"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="role-action-farmer" style="display: none;">
-            <div class="row justify-content-md-center" style="margin: 2% 5% 2% 5%; text-align: center;">
-                <div class="card col" style="width: 18rem;">
-                    <div class="card-body">         
-                        <div class="card text-center">
-                            <div class="card-header">
-                            <h1>Change Product State</h1>
-                            </div>
-                            <div class="card-body">
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <input type="number" class="form-control" id="upc-other" aria-describedby="emailHelp" placeholder="Enter UPC">
-                                </div>
-                            </div>
-                            <div class=" row justify-content-md-center">
-                                <div class="col">
-                                    <button class="btn btn-primary" data-id="2">Mark Processed</button>
-                                </div>
-                                <div class="col">
-                                    <button class="btn btn-primary" data-id="3">Mark Packed</button>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="card-footer text-muted">
-                            <span id="status-other"></span>
-                            <br>
-                            <span id="status-other-2"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="info"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <!-- <script src="js/web3.min.js"></script> -->
         <script src="../js/truffle-contract.js"></script>

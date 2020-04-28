@@ -204,6 +204,7 @@ App = {
         }).then(function(result) {
             console.log('addedHistoryItem',result);
             document.getElementById('history').style.display = 'table';
+            document.getElementById("history-logs").innerHTML = ' ';
             for(var i = 0 ; i < result.length; i++){
                 if(result[i].length > 0){
                     $("#history-logs").append('<tr>' + "<th scope='row'>" + (i + 1) + '</th>' +'<td>' + historyOne[i] + '</td>' + '<td>' + result[i] + '</td>' + '</tr>');
@@ -233,6 +234,14 @@ App = {
     searchResult: function(){
         const searchOne = ['SKU', 'UPC', 'Owner ID', 'Origin Farmer ID', 'Origin Farmer Name', 'Origin Farm Info', 'Origin Farm Latitude', 'Origin Farm Longitude']
         const searchTwo = ['Product ID', 'Prodcut Notes', 'Porduct Price', 'Item State', 'Distributor ID', 'Retailer ID', 'Consumer ID'];
+
+        if(window.location.href == window.location.origin + "/src/html/farmers.html"){
+            
+            document.getElementById('role-action-add').style.display = 'none';
+            document.getElementById('role-action-sell').style.display = 'none';
+            document.getElementById('role-action-farmer').style.display = 'none';
+            
+        }
 
         App.contracts.SupplyChain.deployed().then(function (instance){
             return  instance.fetchItemBufferOne.call(App.upc);
@@ -451,36 +460,6 @@ App = {
         }).catch(function(err) {
             $("#status").text("Error : " + JSON.stringify(err.message));
             console.log(err.message);
-        });
-    },
-
-    fetchItemBufferOne: function () {
-    ///   event.preventDefault();
-    ///    var processId = parseInt($(event.target).data('id'));
-        App.upc = $('#upc').val();
-        console.log('upc',App.upc);
-
-        App.contracts.SupplyChain.deployed().then(function(instance) {
-          return instance.fetchItemBufferOne.call(App.upc);
-        }).then(function(result) {
-          $("#status").text(JSON.stringify(result));
-          console.log('fetchItemBufferOne', result);
-        }).catch(function(err) {
-          console.log(err.message);
-        });
-    },
-
-    fetchItemBufferTwo: function () {
-    ///    event.preventDefault();
-    ///    var processId = parseInt($(event.target).data('id'));
-                        
-        App.contracts.SupplyChain.deployed().then(function(instance) {
-          return instance.fetchItemBufferTwo.call(App.upc);
-        }).then(function(result) {
-          $("#ftc-item").text(result);
-          console.log('fetchItemBufferTwo', result);
-        }).catch(function(err) {
-          console.log(err.message);
         });
     },
 };

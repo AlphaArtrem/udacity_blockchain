@@ -12,5 +12,9 @@ You’ll establish your own NFT token on the ethereum blockchain, and interact w
 
 This project containts an Ethereum DApp that demonstrates a Supply Chain flow between a Seller and Buyer. The user story is similar to any commonly used supply chain process. A Seller can add items to the inventory system stored in the blockchain. A Buyer can purchase such items from the inventory system. Additionally a Seller can mark an item as Shipped, and similarly a Buyer can mark an item as Received.
 
+# Project 4 : Flight Surety
+
+This project is a flight delay insurance for passengers where passengers purchase insurance prior to a flight and if the flight is delayed due to airline's falut the passengers will be paide 1.5 times the amount they paid for the insurance. This will be managed as a collabortion between multiple airlines.
+
 # Practice Mini Projects 
 Contains some practice mini projects made while flloowing classroom instructions.

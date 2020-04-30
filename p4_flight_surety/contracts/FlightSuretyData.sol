@@ -20,6 +20,7 @@ contract FlightSuretyData {
     address private contractOwner;                                      // Account used to deploy contract
     bool private operational;                                           // Blocks all state changes throughout the contract if false
     uint private airlineCount;
+    uint private flightCount;
 
     struct Airline{
         uint id;
@@ -36,6 +37,7 @@ contract FlightSuretyData {
 
     mapping(address => Airline) private airlines;
     mapping(bytes32 => Flight) private flights;
+    mapping(uint => byte32) private idToKey;
 
 
     /********************************************************************************************/
@@ -51,6 +53,7 @@ contract FlightSuretyData {
     {
         operational = true;
         airlineCount = 0;
+        flightCount = 0;
         contractOwner = msg.sender;
         airlineCount = airlineCount.add(1);
         airlines[contracOwner] = Airline({id: airlineCount, isActive : true});
@@ -92,9 +95,18 @@ contract FlightSuretyData {
         require(airlines[_airline].isActive, "Airline is not active");
     }
 
+    modifier requireAirlineExists(adresss _airline){
+        require(airlines[_airline].id > 0, "Airline is not registered");
+    }
+
+    modifier requireFlightExists(uint id){
+        bytes32 key = idToKey[id];
+        require(key != "", "Flight is not registered");
+    }
+
     event AirlineRegistered(address airline, uint airlineID);
     event AirlineActivated(address airline, uint airlineID);
-    event FlightRegistered(byte32 flightKey, string flight, address airline);
+    event FlightRegistered(address airline, byte32 flightKey, uint id, string flight);
 
     /********************************************************************************************/
     /*                                       UTILITY FUNCTIONS                                  */
@@ -130,7 +142,7 @@ contract FlightSuretyData {
     *      Can only be called from FlightSuretyApp contract
     *
     */
-    function registerAirline(address _airline) external pure requireIsOperational requireVerifiedCaller
+    function registerAirline(address _airline) external requireIsOperational requireVerifiedCaller
     {
         airlineCount = airlineCount.add(1);
         airlines[airline] = Airline({id: airlineCount, isActive: false});
@@ -138,14 +150,14 @@ contract FlightSuretyData {
         emit AirlineRegistered(_airline, airlineCoint);
     }
 
-    function activateAirline(address _airline) external pure requireIsOperational requireVerifiedCaller{
+    function activateAirline(address _airline) external requireIsOperational requireVerifiedCaller requireAirlineExists(_airline){
         airlines[_airline].isActive = true;
 
         emit AirlineActivated(_airline, airlines[_airline].id);
     }
 
     function registerFlight(address _airline, string memory _flight, uint256 _departureTimestamp)
-    external pure requireIsOperational requireVerifiedCaller requireActiveAirline(_airline)
+    external requireIsOperational requireVerifiedCaller requireActiveAirline(_airline) requireAirlineExists(_airline)
     {
         require(departureTimestamp > block.timestamp, "Departure Time Can't Be Less Than Current Time");
 
@@ -160,7 +172,20 @@ contract FlightSuretyData {
         byte32 key = getFlightKey(_airline, _flight, _departureTimestamp);
         flights[key] = newFlight;
 
-        emit FlightRegistered(key, _flight, _airline);
+        flightCount = flightCount.add(1);
+        idToKey[flightCount] = key;
+
+        emit FlightRegistered(_airline, key, flightCount, _flight);
+    }
+
+    function getFlight(uint _id) external requireIsOperational requireflightExists(_id)
+    returns (address, string memory, unint256, uinit8){
+        Flight queryFlight = flights[idToKey[_id]];
+        return(queryFlight.airline, queryFlight.flight, queryFlight.departureTimestamp, queryFlight.statusCode);
+    }
+
+    function getFlightCount() external requireIsOperational returns(unit){
+        return flightCount;
     }
 
    /**

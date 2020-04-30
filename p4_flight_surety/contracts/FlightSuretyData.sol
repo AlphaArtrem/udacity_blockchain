@@ -16,11 +16,15 @@ contract FlightSuretyData {
     uint8 private constant STATUS_CODE_LATE_WEATHER = 30;
     uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
+    uint8 private constant INSURANCE_ACTIVE = 0;
+    uint8 private constant INSURANCE_EXPIRED = 1;
+    uint8 private constant INSURANCE_CREDITED = 2;
 
     address private contractOwner;                                      // Account used to deploy contract
     bool private operational;                                           // Blocks all state changes throughout the contract if false
     uint private airlineCount;
     uint private flightCount;
+    uint private insuranceCount;
 
     struct Airline{
         uint id;
@@ -35,9 +39,22 @@ contract FlightSuretyData {
         uint256 departureTimestamp;
     }
 
+    struct Insurance {
+        uint id;
+        uint flightId;
+        uint8 statusCode;
+        uint amountPaid;
+        address owner;
+    }
+
     mapping(address => Airline) private airlines;
     mapping(bytes32 => Flight) private flights;
-    mapping(uint => byte32) private idToKey;
+    mapping(uint => Insurance) private insurances;
+    mapping(uint => bytes32) private flightIdToKey;
+    mapping(address => uint[]) private insurancesByPassenger;
+    mapping(uint => uint[]) private insurancesByFlight;
+    mapping(uint => mapping(address => bool)) private passengersByFlight;
+
 
 
     /********************************************************************************************/
@@ -49,14 +66,15 @@ contract FlightSuretyData {
     * @dev Constructor
     *      The deploying account becomes contractOwner
     */
-    constructor() public
+    constructor() public payable
     {
         operational = true;
         airlineCount = 0;
         flightCount = 0;
+        insuranceCount = 0;
         contractOwner = msg.sender;
         airlineCount = airlineCount.add(1);
-        airlines[contracOwner] = Airline({id: airlineCount, isActive : true});
+        airlines[contractOwner] = Airline({id: airlineCount, isActive : true});
         address(this).transfer(msg.value);
     }
 
@@ -87,26 +105,41 @@ contract FlightSuretyData {
         _;
     }
 
-    modifier requireVerifiedCaller(){
+    modifier requireAirlineOwner(){
         require(airlines[msg.sender].isActive, "Caller is not verified");
+        _;
     }
 
-    modifier requireActiveAirline(adresss _airline){
+    modifier requireActiveAirline(address _airline){
         require(airlines[_airline].isActive, "Airline is not active");
+        _;
     }
 
-    modifier requireAirlineExists(adresss _airline){
+    modifier requireAirlineExists(address _airline){
         require(airlines[_airline].id > 0, "Airline is not registered");
+        _;
     }
 
-    modifier requireFlightExists(uint id){
-        bytes32 key = idToKey[id];
+    modifier requireFlightExists(uint _id){
+        bytes32 key = flightIdToKey[_id];
         require(key != "", "Flight is not registered");
+        _;
     }
 
+    modifier requirePassengerForFlightExists(uint _flightId, address _passenger){
+        require(passengersByFlight[_flightId][_passenger], "You are not registered for this flight");
+        _;
+    }
+
+    /********************************************************************************************/
+    /*                                           EVENTS                                         */
+    /********************************************************************************************/
+
+    event FlightRegistered(address airline, bytes32 flightKey, uint id, string flight);
+    event InsuranceCreated(uint id);
+    event InsuranceExpired(uint id);
     event AirlineRegistered(address airline, uint airlineID);
     event AirlineActivated(address airline, uint airlineID);
-    event FlightRegistered(address airline, byte32 flightKey, uint id, string flight);
 
     /********************************************************************************************/
     /*                                       UTILITY FUNCTIONS                                  */
@@ -142,26 +175,27 @@ contract FlightSuretyData {
     *      Can only be called from FlightSuretyApp contract
     *
     */
-    function registerAirline(address _airline) external requireIsOperational requireVerifiedCaller
+    function registerAirline(address _airline) external requireIsOperational requireAirlineOwner
     {
         airlineCount = airlineCount.add(1);
-        airlines[airline] = Airline({id: airlineCount, isActive: false});
+        airlines[_airline] = Airline({id: airlineCount, isActive: false});
 
-        emit AirlineRegistered(_airline, airlineCoint);
+        emit AirlineRegistered(_airline, airlineCount);
     }
 
-    function activateAirline(address _airline) external requireIsOperational requireVerifiedCaller requireAirlineExists(_airline){
+    function activateAirline(address _airline) external requireIsOperational requireAirlineOwner requireAirlineExists(_airline){
         airlines[_airline].isActive = true;
 
         emit AirlineActivated(_airline, airlines[_airline].id);
     }
 
-    function registerFlight(address _airline, string memory _flight, uint256 _departureTimestamp)
-    external requireIsOperational requireVerifiedCaller requireActiveAirline(_airline) requireAirlineExists(_airline)
+    function registerFlight(address _airline, string _flight, uint256 _departureTimestamp)
+    external requireIsOperational requireAirlineOwner requireActiveAirline(_airline) requireAirlineExists(_airline)
     {
-        require(departureTimestamp > block.timestamp, "Departure Time Can't Be Less Than Current Time");
+        require(_departureTimestamp > block.timestamp, "Departure Time Can't Be Less Than Current Time");
 
-        Flight newFlight = Flight({
+        bytes32 key = getFlightKey(_airline, _flight, _departureTimestamp);
+        flights[key] = Flight({
             flight: _flight,
             statusCode: STATUS_CODE_UNKNOWN,
             updatedTimestamp: block.timestamp,
@@ -169,32 +203,58 @@ contract FlightSuretyData {
             airline : _airline
         });
 
-        byte32 key = getFlightKey(_airline, _flight, _departureTimestamp);
-        flights[key] = newFlight;
-
         flightCount = flightCount.add(1);
-        idToKey[flightCount] = key;
+        flightIdToKey[flightCount] = key;
 
         emit FlightRegistered(_airline, key, flightCount, _flight);
     }
 
-    function getFlight(uint _id) external requireIsOperational requireflightExists(_id)
-    returns (address, string memory, unint256, uinit8){
-        Flight queryFlight = flights[idToKey[_id]];
-        return(queryFlight.airline, queryFlight.flight, queryFlight.departureTimestamp, queryFlight.statusCode);
+    function getFlight(uint _id) external view requireIsOperational requireFlightExists(_id)
+    returns (address, string memory, uint256, uint8){
+        bytes32 key = flightIdToKey[_id];
+        return(flights[key].airline, flights[key].flight, flights[key].departureTimestamp, flights[key].statusCode);
     }
 
-    function getFlightCount() external requireIsOperational returns(unit){
+    function getFlightCount() external view requireIsOperational returns(uint){
         return flightCount;
+    }
+
+    function addPassengerForFlight(uint _flightId, address _passenger) external
+    requireIsOperational requireAirlineOwner requireFlightExists(_flightId)
+    {
+        passengersByFlight[_flightId][_passenger] = true;
     }
 
    /**
     * @dev Buy insurance for a flight
     *
     */
-    function buy() external payable
+    function buyInsurance(uint _flightId, uint _amountPaid, address _owner) external
+    requireIsOperational requireFlightExists(_flightId) requirePassengerForFlightExists(_flightId, _owner)
     {
+        insuranceCount = insuranceCount.add(1);
+        insurances[insuranceCount] = Insurance({
+            id: insuranceCount,
+            flightId: _flightId,
+            amountPaid: _amountPaid,
+            owner: _owner,
+            statusCode: INSURANCE_ACTIVE
+        });
 
+        insurancesByPassenger[_owner].push(insuranceCount);
+        insurancesByFlight[_flightId].push(insuranceCount);
+
+        emit InsuranceCreated(insuranceCount);
+    }
+
+    function getInsurancesByFlight(uint _flightId) external view
+    requireIsOperational requireFlightExists(_flightId) returns(uint[]){
+        return insurancesByFlight[_flightId];
+    }
+
+    function getInsurancesByPassenger(address _passenger) external view
+    requireIsOperational returns(uint[]){
+        return insurancesByPassenger[_passenger];
     }
 
     /**

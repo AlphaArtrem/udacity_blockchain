@@ -204,6 +204,12 @@ contract FlightSuretyData {
         emit AuthorisedContractAdded(_contract);
     }
 
+    function setTestingMode(bool mode) public requireIsOperational
+    returns (bool)
+    {
+        return true;
+    }
+
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/

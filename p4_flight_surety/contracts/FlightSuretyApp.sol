@@ -130,6 +130,17 @@ contract FlightSuretyApp {
         return operational;  // Modify to call data contract's status
     }
 
+    function setOperatingStatus(bool mode) public requireContractOwner
+    {
+        operational = mode;
+    }
+
+    function setTestingMode(bool mode) public requireIsOperational
+    returns (bool)
+    {
+        return true;
+    }
+
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/

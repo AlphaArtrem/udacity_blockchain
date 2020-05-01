@@ -16,6 +16,18 @@ contract FlightSuretyApp {
     /*                                       DATA VARIABLES                                     */
     /********************************************************************************************/
 
+    uint8 private constant STATUS_CODE_UNKNOWN = 0;
+    uint8 private constant STATUS_CODE_ON_TIME = 10;
+    uint8 private constant STATUS_CODE_LATE_AIRLINE = 20;
+    uint8 private constant STATUS_CODE_LATE_WEATHER = 30;
+    uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
+    uint8 private constant STATUS_CODE_LATE_OTHER = 50;
+    uint8 private constant INSURANCE_ACTIVE = 0;
+    uint8 private constant INSURANCE_EXPIRED = 1;
+    uint8 private constant INSURANCE_CLAIMED = 2;
+    uint8 private constant INSURANCE_CLAIMABLE = 3;
+
+
     address private contractOwner;          // Account used to deploy contract
     bool private operational;
     uint private airlineCount;
@@ -79,12 +91,19 @@ contract FlightSuretyApp {
         _;
     }
 
+    modifier requireActiveAirline(address _airline){
+        require(dataContract.isAirlineActive(_airline) == true, "Airline is not active");
+        _;
+    }
+
     /********************************************************************************************/
     /*                                           EVENTS                                         */
     /********************************************************************************************/
 
     event AirlineRegistered(address airline, string message);
     event AirlineActive(address airline, string message);
+    event FlightRegistered(address airline, string flight);
+    event FlightStatusChanged(uint id, uint8 statusCode);
 
     /********************************************************************************************/
     /*                                       CONSTRUCTOR                                        */
@@ -168,9 +187,11 @@ contract FlightSuretyApp {
     * @dev Register a future flight for insuring.
     *
     */
-    function registerFlight() external
+    function registerFlight(address _airline, string _flight, uint256 _departureTimestamp) public
+    requireIsOperational requireAirlineOwner requireActiveAirline(_airline)
     {
-
+        dataContract.registerFlight(_airline, _flight, _departureTimestamp, msg.sender);
+        emit FlightRegistered(_airline, _flight);
     }
 
    /**
@@ -179,17 +200,32 @@ contract FlightSuretyApp {
     */
     function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode) public
     {
+        bytes32 key = keccak256(abi.encodePacked(airline, flight, timestamp));
+        uint id = dataContract.getFlightId(key);
 
+        dataContract.setFlightStatus(id, statusCode);
+
+        if(statusCode == STATUS_CODE_LATE_AIRLINE && block.timestamp >= timestamp){
+            uint[] insurancesIds = dataContract.getInsurancesByFlight(id);
+
+            for(uint i = 0; i < insurancesIds.length; i++){
+                dataContract.setInsuranceStatusClaimable(insurancesIds[i]);
+            }
+        }
+        else if(statusCode == STATUS_CODE_ON_TIME && block.timestamp >= timestamp){
+            uint[] insurancesIds = dataContract.getInsurancesByFlight(id);
+
+            for(uint i = 0; i < insurancesIds.length; i++){
+                dataContract.setInsuranceStatusExpired(insurancesIds[i]);
+            }
+        }
+
+        emit FlightStatusChanged(id, statusCode);
     }
 
 
     // Generate a request for oracles to fetch flight information
-    function fetchFlightStatus(
-                            address airline,
-                            string flight,
-                            uint256 timestamp
-                        )
-                        external
+    function fetchFlightStatus(address airline, string flight, uint256 timestamp) external
     {
         uint8 index = getRandomIndex(msg.sender);
 
@@ -270,13 +306,7 @@ contract FlightSuretyApp {
     // For the response to be accepted, there must be a pending request that is open
     // and matches one of the three Indexes randomly assigned to the oracle at the
     // time of registration (i.e. uninvited oracles are not welcome)
-    function submitOracleResponse(
-        uint8 index,
-        address airline,
-        string flight,
-        uint256 timestamp,
-        uint8 statusCode
-    ) external
+    function submitOracleResponse(uint8 index, address airline, string flight, uint256 timestamp, uint8 statusCode) external
     {
         require((oracles[msg.sender].indexes[0] == index) || (oracles[msg.sender].indexes[1] == index) || (oracles[msg.sender].indexes[2] == index),
          "Index does not match oracle request");
@@ -300,12 +330,7 @@ contract FlightSuretyApp {
     }
 
 
-    function getFlightKey
-    (
-        address airline,
-        string flight,
-        uint256 timestamp
-    )
+    function getFlightKey(address airline, string flight, uint256 timestamp)
     public returns(bytes32)
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
@@ -356,9 +381,11 @@ contract FlightSuretyData{
     function getAirlineCount() public view returns(uint);
     function isAirlineOwner(address _caller) public view returns (bool);
     function isAirlineRegistered(address _airline) public view returns(bool);
+    function isAirlineActive(address _airline) public view returns (bool);
     function registerFlight(address _airline, string _flight, uint256 _departureTimestamp, address _caller) public;
     function getFlight(uint _id) public view returns (address, string memory, uint256, uint8);
     function getFlightCount() public view returns(uint);
+    function getFlightId(bytes32 _key) public view returns (uint);
     function setFlightStatus(uint _id, uint8 _statusCode) public;
     function addPassengerForFlight(uint _flightId, address _passenger, address _caller) public;
     function buyInsurance(uint _flightId, uint _amountPaid, address _owner) public;
@@ -366,5 +393,6 @@ contract FlightSuretyData{
     function getInsurancesByPassenger(address _passenger) public view returns(uint[]);
     function getInsuranceById(uint _insuranceId) public view returns(uint, uint, uint8, uint, address);
     function setInsuranceStatusExpired(uint _insuranceId) public;
+    function setInsuranceStatusClaimable(uint _insuranceId) public;
     function claimInsurance(uint _insuranceId, address _caller) public;
 }

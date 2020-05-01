@@ -19,6 +19,7 @@ contract FlightSuretyData {
     uint8 private constant INSURANCE_ACTIVE = 0;
     uint8 private constant INSURANCE_EXPIRED = 1;
     uint8 private constant INSURANCE_CLAIMED = 2;
+    uint8 private constant INSURANCE_CLAIMABLE = 3;
 
     address private contractOwner;                                      // Account used to deploy contract
     bool private operational;                                           // Blocks all state changes throughout the contract if false
@@ -131,6 +132,12 @@ contract FlightSuretyData {
         _;
     }
 
+    modifier requireFlightKeyExists(bytes32 _key){
+        require(flights[_key].id > 0 != "", "Flight is not registered");
+        _;
+    }
+
+
     modifier requirePassengerForFlightExists(uint _flightId, address _passenger){
         require(passengersByFlight[_flightId][_passenger], "You are not registered for this flight");
         _;
@@ -143,6 +150,11 @@ contract FlightSuretyData {
 
     modifier requireInsuranceExists(uint _insuranceId){
         require(insurances[_insuranceId].id > 0, "You cannot claim this insurance");
+        _;
+    }
+
+    modifier requireInsuranceClaimable(uint _insuranceId){
+        require(insurances[_insuranceId].statusCode == INSURANCE_CLAIMABLE, "Insurnce can't be claimed");
         _;
     }
 
@@ -237,6 +249,13 @@ contract FlightSuretyData {
         return true;
     }
 
+    function isAirlineActive(address _airline) public view
+    requireAuthorisedContract requireIsOperational requireActiveAirline(_airline)
+    returns (bool)
+    {
+        return true;
+    }
+
     function registerFlight(address _airline, string _flight, uint256 _departureTimestamp, address _caller) public
     requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller) requireActiveAirline(_airline) requireAirlineExists(_airline)
     {
@@ -269,6 +288,13 @@ contract FlightSuretyData {
     requireAuthorisedContract requireIsOperational returns(uint)
     {
         return flightCount;
+    }
+
+    function getFlightId(bytes32 _key) public view
+    requireAuthorisedContract requireIsOperational requireFlightKeyExists(_key)
+    returns (uint)
+    {
+        return flights[_key].id;
     }
 
     function setFlightStatus(uint _id, uint8 _statusCode) public
@@ -340,8 +366,16 @@ contract FlightSuretyData {
         emit InsuranceExpired(_insuranceId);
     }
 
+    function setInsuranceStatusClaimable(uint _insuranceId) public
+    requireAuthorisedContract requireIsOperational requireInsuranceExists(_insuranceId)
+    {
+        insurances[_insuranceId].statusCode = INSURANCE_CLAIMABLE;
+        emit InsuranceExpired(_insuranceId);
+    }
+
     function claimInsurance(uint _insuranceId, address _caller) public
-    requireAuthorisedContract requireIsOperational requireInsuranceOwner(_insuranceId, _caller) requireInsuranceExists(_insuranceId)
+    requireAuthorisedContract requireIsOperational requireInsuranceOwner(_insuranceId, _caller)
+    requireInsuranceExists(_insuranceId) requireInsuranceClaimable(_insuranceId)
     {
         address owner = insurances[_insuranceId].owner;
         uint amount = insurances[_insuranceId].amountPaid;

@@ -194,6 +194,48 @@ contract FlightSuretyApp {
         emit FlightRegistered(_airline, _flight);
     }
 
+    function getFlight(uint _id) public view
+    requireIsOperational
+    returns (address, string memory, uint256, uint8)
+    {
+        return dataContract.getFlight(_id);
+    }
+
+    // Passengers
+
+    function addPassengerForFlight(uint _flightId, address _passenger) public
+    requireIsOperational requireAirlineOwner
+    {
+        dataContract.addPassengerForFlight(_flightId, _passenger, msg.sender);
+    }
+
+    // Insurance
+
+    function buyInsurance(uint _flightId, uint _amountPaid) public
+    requireIsOperational requireAirlineOwner
+    {
+        dataContract.buyInsurance(_flightId, _amountPaid, msg.caller);
+    }
+
+    function getInsurancesByFlight(uint _flightId) public view
+    requireIsOperational requireAirlineOwner returns(uint[])
+    {
+        return dataContract.getInsurancesByFlight(_flightId);
+    }
+
+    function getInsurancesByPassenger(address _passenger) public view
+    requireIsOperational requireAirlineOwner returns(uint[])
+    {
+        return dataContract.getInsurancesByPassenger(_passenger);
+    }
+
+    function getInsuranceById(uint _insuranceId) public view
+    requireIsOperational requireAirlineOwner
+    returns(uint, uint, uint8, uint, address)
+    {
+        return dataContract.getInsuranceById(_insuranceId);
+    }
+
    /**
     * @dev Called after oracle has updated flight status
     *

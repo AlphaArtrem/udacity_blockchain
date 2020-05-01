@@ -203,8 +203,8 @@ contract FlightSuretyData {
     function registerAirline(address _airline, address _caller) public
     requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller)
     {
-        airlineCount = airlineCount.add(1);
         airlines[_airline] = Airline({id: airlineCount, isActive: false});
+        airlineCount = airlineCount.add(1);
 
         emit AirlineRegistered(_airline, airlineCount);
     }
@@ -215,6 +215,26 @@ contract FlightSuretyData {
         airlines[_airline].isActive = true;
 
         emit AirlineActivated(_airline, airlines[_airline].id);
+    }
+
+    function getAirlineCount() public view
+    requireAuthorisedContract requireIsOperational returns(uint)
+    {
+        return airlineCount;
+    }
+
+    function isAirlineOwner(address _caller) public view
+    requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller)
+    returns (bool)
+    {
+        return true;
+    }
+
+    function isAirlineRegistered(address _airline) public view
+    requireAuthorisedContract requireIsOperational requireAirlineExists(_airline)
+    returns(bool)
+    {
+        return true;
     }
 
     function registerFlight(address _airline, string _flight, uint256 _departureTimestamp, address _caller) public

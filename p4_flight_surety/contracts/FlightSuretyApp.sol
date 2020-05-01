@@ -18,8 +18,11 @@ contract FlightSuretyApp {
 
     address private contractOwner;          // Account used to deploy contract
     bool private operational;
-    
+    uint private airlineCount;
+
     FlightSuretyData dataContract;
+
+    mapping(address => address[]) bufferAirlineVoters;
 
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
@@ -49,6 +52,40 @@ contract FlightSuretyApp {
         _;
     }
 
+    modifier requireAirlineOwner()
+    {
+        require(dataContract.isAirlineOwner(msg.sender) == true, "You can't create or vote for airlines");
+        _;
+    }
+
+    modifier requireUnregisteredAirline(address _airline){
+        require(dataContract.isAirlineRegistered(_airline) != true, "Airline is already registered");
+        _;
+    }
+
+    modifier requirePaidEnough(uint _amount){
+        require(msg.value >= _amount, "Insufficient ether paid");
+        _;
+    }
+
+    modifier requireChange(uint _amount){
+        _;
+        uint change = msg.value.sub(_amount);
+        msg.sender.transfer(change);
+    }
+
+    modifier requireregisteredAirline(address _airline){
+        require(dataContract.isAirlineRegistered(_airline) == true, "Airline is not registered");
+        _;
+    }
+
+    /********************************************************************************************/
+    /*                                           EVENTS                                         */
+    /********************************************************************************************/
+
+    event AirlineRegistered(address airline, string message);
+    event AirlineActive(address airline, string message);
+
     /********************************************************************************************/
     /*                                       CONSTRUCTOR                                        */
     /********************************************************************************************/
@@ -62,6 +99,7 @@ contract FlightSuretyApp {
         operational = true;
         contractOwner = msg.sender;
         dataContract = FlightSuretyData(dataContractAddress);
+        airlineCount = dataContract.getAirlineCount();
     }
 
     /********************************************************************************************/
@@ -82,9 +120,47 @@ contract FlightSuretyApp {
     * @dev Add an airline to the registration queue
     *
     */
-    function registerAirline() external returns(bool success, uint256 votes)
+    function registerAirline(address _airline) public
+    requireIsOperational requireAirlineOwner requireUnregisteredAirline(_airline)
     {
-        return (success, 0);
+       if(airlineCount < 5){
+           dataContract.registerAirline(_airline, msg.sender);
+           airlineCount = dataContract.getAirlineCount();
+
+           emit AirlineRegistered(_airline, "Pay 10 ether to activate airline");
+       }
+       else{
+           bufferAirlineVoters[_airline].push(msg.sender);
+           airlineCount = dataContract.getAirlineCount();
+
+           emit AirlineRegistered(_airline, "You need to get 50% votes to activate registraion and pay fees");
+       }
+    }
+
+    function voteForAirline(address _airline) public
+    requireIsOperational requireAirlineOwner requireUnregisteredAirline(_airline)
+    {
+        airlineCount = dataContract.getAirlineCount();
+        bufferAirlineVoters[_airline].push(msg.sender);
+
+        if(bufferAirlineVoters[_airline].length >= (airlineCount / 2)){
+            dataContract.registerAirline(_airline, msg.sender);
+            airlineCount = dataContract.getAirlineCount();
+
+            emit AirlineRegistered(_airline, "Pay 10 ether to activate airline");
+        }
+        else{
+            emit AirlineRegistered(_airline, "You need to get more votes to activate registraion and pay fees");
+        }
+
+    }
+
+    function activateAirline(address _airline) public
+    requireIsOperational requireregisteredAirline(_airline) requirePaidEnough(10 ether) requireChange(10 ether)
+    {
+        dataContract.activateAirline(_airline, msg.sender);
+
+        emit AirlineActive(_airline, "Airline Activated");
     }
 
 
@@ -101,7 +177,7 @@ contract FlightSuretyApp {
     * @dev Called after oracle has updated flight status
     *
     */
-    function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode) internal
+    function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode) public
     {
 
     }
@@ -230,13 +306,13 @@ contract FlightSuretyApp {
         string flight,
         uint256 timestamp
     )
-    internal returns(bytes32)
+    public returns(bytes32)
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }
 
     // Returns array of three non-duplicating integers from 0-9
-    function generateIndexes(address account) internal returns(uint8[3])
+    function generateIndexes(address account) public returns(uint8[3])
     {
         uint8[3] memory indexes;
         indexes[0] = getRandomIndex(account);
@@ -255,7 +331,7 @@ contract FlightSuretyApp {
     }
 
     // Returns array of three non-duplicating integers from 0-9
-    function getRandomIndex(address account) internal returns (uint8)
+    function getRandomIndex(address account) public returns (uint8)
     {
         uint8 maxValue = 10;
 
@@ -277,6 +353,9 @@ contract FlightSuretyData{
 
     function registerAirline(address _airline, address _caller) public;
     function activateAirline(address _airline, address _caller) public;
+    function getAirlineCount() public view returns(uint);
+    function isAirlineOwner(address _caller) public view returns (bool);
+    function isAirlineRegistered(address _airline) public view returns(bool);
     function registerFlight(address _airline, string _flight, uint256 _departureTimestamp, address _caller) public;
     function getFlight(uint _id) public view returns (address, string memory, uint256, uint8);
     function getFlightCount() public view returns(uint);

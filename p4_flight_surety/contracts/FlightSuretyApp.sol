@@ -17,7 +17,9 @@ contract FlightSuretyApp {
     /********************************************************************************************/
 
     address private contractOwner;          // Account used to deploy contract
-
+    bool private operational;
+    
+    FlightSuretyData dataContract;
 
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
@@ -34,7 +36,7 @@ contract FlightSuretyApp {
     modifier requireIsOperational()
     {
          // Modify to call data contract's status
-        require(true, "Contract is currently not operational");
+        require(operational, "Contract is currently not operational");
         _;  // All modifiers require an "_" which indicates where the function body will be added
     }
 
@@ -55,18 +57,20 @@ contract FlightSuretyApp {
     * @dev Contract constructor
     *
     */
-    constructor() public
+    constructor(address dataContractAddress) public
     {
+        operational = true;
         contractOwner = msg.sender;
+        dataContract = FlightSuretyData(dataContractAddress);
     }
 
     /********************************************************************************************/
     /*                                       UTILITY FUNCTIONS                                  */
     /********************************************************************************************/
 
-    function isOperational() public pure returns(bool)
+    function isOperational() public view returns(bool)
     {
-        return true;  // Modify to call data contract's status
+        return operational;  // Modify to call data contract's status
     }
 
     /********************************************************************************************/
@@ -78,7 +82,7 @@ contract FlightSuretyApp {
     * @dev Add an airline to the registration queue
     *
     */
-    function registerAirline() external pure returns(bool success, uint256 votes)
+    function registerAirline() external returns(bool success, uint256 votes)
     {
         return (success, 0);
     }
@@ -88,7 +92,7 @@ contract FlightSuretyApp {
     * @dev Register a future flight for insuring.
     *
     */
-    function registerFlight() external pure
+    function registerFlight() external
     {
 
     }
@@ -97,7 +101,7 @@ contract FlightSuretyApp {
     * @dev Called after oracle has updated flight status
     *
     */
-    function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode) internal pure
+    function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode) internal
     {
 
     }
@@ -226,7 +230,7 @@ contract FlightSuretyApp {
         string flight,
         uint256 timestamp
     )
-    internal pure returns(bytes32)
+    internal returns(bytes32)
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }
@@ -267,4 +271,21 @@ contract FlightSuretyApp {
 
 // endregion
 
+}
+
+contract FlightSuretyData{
+
+    function registerAirline(address _airline, address _caller) public;
+    function activateAirline(address _airline, address _caller) public;
+    function registerFlight(address _airline, string _flight, uint256 _departureTimestamp, address _caller) public;
+    function getFlight(uint _id) public view returns (address, string memory, uint256, uint8);
+    function getFlightCount() public view returns(uint);
+    function setFlightStatus(uint _id, uint8 _statusCode) public;
+    function addPassengerForFlight(uint _flightId, address _passenger, address _caller) public;
+    function buyInsurance(uint _flightId, uint _amountPaid, address _owner) public;
+    function getInsurancesByFlight(uint _flightId) public view returns(uint[]);
+    function getInsurancesByPassenger(address _passenger) public view returns(uint[]);
+    function getInsuranceById(uint _insuranceId) public view returns(uint, uint, uint8, uint, address);
+    function setInsuranceStatusExpired(uint _insuranceId) public;
+    function claimInsurance(uint _insuranceId, address _caller) public;
 }

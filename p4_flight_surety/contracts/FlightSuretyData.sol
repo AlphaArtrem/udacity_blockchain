@@ -18,7 +18,7 @@ contract FlightSuretyData {
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
     uint8 private constant INSURANCE_ACTIVE = 0;
     uint8 private constant INSURANCE_EXPIRED = 1;
-    uint8 private constant INSURANCE_CREDITED = 2;
+    uint8 private constant INSURANCE_CLAIMED = 2;
 
     address private contractOwner;                                      // Account used to deploy contract
     bool private operational;                                           // Blocks all state changes throughout the contract if false
@@ -54,7 +54,7 @@ contract FlightSuretyData {
     mapping(address => uint[]) private insurancesByPassenger;
     mapping(uint => uint[]) private insurancesByFlight;
     mapping(uint => mapping(address => bool)) private passengersByFlight;
-
+    mapping(address => bool) private authorisedContracts;
 
 
     /********************************************************************************************/
@@ -105,8 +105,13 @@ contract FlightSuretyData {
         _;
     }
 
-    modifier requireAirlineOwner(){
-        require(airlines[msg.sender].isActive, "Caller is not verified");
+    modifier requireAuthorisedContract(){
+        require(authorisedContracts[msg.sender] == true, "Contract is not authorised");
+        _;
+    }
+
+    modifier requireAirlineOwner(address _caller){
+        require(airlines[_caller].isActive, "Caller is not verified");
         _;
     }
 
@@ -131,15 +136,28 @@ contract FlightSuretyData {
         _;
     }
 
+    modifier requireInsuranceOwner(uint _insuranceId, address _caller){
+        require(insurances[_insuranceId].owner == _caller, "You cannot claim this insurance");
+        _;
+    }
+
+    modifier requireInsuranceExists(uint _insuranceId){
+        require(insurances[_insuranceId].id > 0, "You cannot claim this insurance");
+        _;
+    }
+
     /********************************************************************************************/
     /*                                           EVENTS                                         */
     /********************************************************************************************/
 
     event FlightRegistered(address airline, bytes32 flightKey, uint id, string flight);
+    event FlightStatusChanged(uint id, uint8 statusCode);
     event InsuranceCreated(uint id);
     event InsuranceExpired(uint id);
+    event InsuranceClaimed(uint id);
     event AirlineRegistered(address airline, uint airlineID);
     event AirlineActivated(address airline, uint airlineID);
+    event AuthorisedContractAdded(address _contract);
 
     /********************************************************************************************/
     /*                                       UTILITY FUNCTIONS                                  */
@@ -166,6 +184,13 @@ contract FlightSuretyData {
         operational = mode;
     }
 
+    function addAuthorisedContract(address _contract) external requireContractOwner
+    {
+        authorisedContracts[_contract] = true;
+
+        emit AuthorisedContractAdded(_contract);
+    }
+
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
@@ -175,7 +200,8 @@ contract FlightSuretyData {
     *      Can only be called from FlightSuretyApp contract
     *
     */
-    function registerAirline(address _airline) external requireIsOperational requireAirlineOwner
+    function registerAirline(address _airline, address _caller) external
+    requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller)
     {
         airlineCount = airlineCount.add(1);
         airlines[_airline] = Airline({id: airlineCount, isActive: false});
@@ -183,14 +209,16 @@ contract FlightSuretyData {
         emit AirlineRegistered(_airline, airlineCount);
     }
 
-    function activateAirline(address _airline) external requireIsOperational requireAirlineOwner requireAirlineExists(_airline){
+    function activateAirline(address _airline, address _caller) external
+    requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller) requireAirlineExists(_airline)
+    {
         airlines[_airline].isActive = true;
 
         emit AirlineActivated(_airline, airlines[_airline].id);
     }
 
-    function registerFlight(address _airline, string _flight, uint256 _departureTimestamp)
-    external requireIsOperational requireAirlineOwner requireActiveAirline(_airline) requireAirlineExists(_airline)
+    function registerFlight(address _airline, string _flight, uint256 _departureTimestamp, address _caller) external
+    requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller) requireActiveAirline(_airline) requireAirlineExists(_airline)
     {
         require(_departureTimestamp > block.timestamp, "Departure Time Can't Be Less Than Current Time");
 
@@ -209,18 +237,31 @@ contract FlightSuretyData {
         emit FlightRegistered(_airline, key, flightCount, _flight);
     }
 
-    function getFlight(uint _id) external view requireIsOperational requireFlightExists(_id)
-    returns (address, string memory, uint256, uint8){
+    function getFlight(uint _id) external view
+    requireAuthorisedContract requireIsOperational requireFlightExists(_id)
+    returns (address, string memory, uint256, uint8)
+    {
         bytes32 key = flightIdToKey[_id];
         return(flights[key].airline, flights[key].flight, flights[key].departureTimestamp, flights[key].statusCode);
     }
 
-    function getFlightCount() external view requireIsOperational returns(uint){
+    function getFlightCount() external view
+    requireAuthorisedContract requireIsOperational returns(uint)
+    {
         return flightCount;
     }
 
-    function addPassengerForFlight(uint _flightId, address _passenger) external
-    requireIsOperational requireAirlineOwner requireFlightExists(_flightId)
+    function setFlightStatus(uint _id, uint8 _statusCode) external
+    requireAuthorisedContract requireIsOperational requireFlightExists(_id)
+    {
+        bytes32 key = flightIdToKey[_id];
+        flights[key].statusCode = _statusCode;
+
+        emit FlightStatusChanged(_id, _statusCode);
+    }
+
+    function addPassengerForFlight(uint _flightId, address _passenger, address _caller) external
+    requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller) requireFlightExists(_flightId)
     {
         passengersByFlight[_flightId][_passenger] = true;
     }
@@ -230,7 +271,7 @@ contract FlightSuretyData {
     *
     */
     function buyInsurance(uint _flightId, uint _amountPaid, address _owner) external
-    requireIsOperational requireFlightExists(_flightId) requirePassengerForFlightExists(_flightId, _owner)
+    requireAuthorisedContract requireIsOperational requireFlightExists(_flightId) requirePassengerForFlightExists(_flightId, _owner)
     {
         insuranceCount = insuranceCount.add(1);
         insurances[insuranceCount] = Insurance({
@@ -248,29 +289,45 @@ contract FlightSuretyData {
     }
 
     function getInsurancesByFlight(uint _flightId) external view
-    requireIsOperational requireFlightExists(_flightId) returns(uint[]){
+    requireAuthorisedContract requireIsOperational requireFlightExists(_flightId) returns(uint[])
+    {
         return insurancesByFlight[_flightId];
     }
 
     function getInsurancesByPassenger(address _passenger) external view
-    requireIsOperational returns(uint[]){
+    requireAuthorisedContract requireIsOperational returns(uint[])
+    {
         return insurancesByPassenger[_passenger];
     }
 
-    /**
-     *  @dev Credits payouts to insurees
-    */
-    function creditInsurees() external pure
+    function getInsuranceById(uint _insuranceId) external view
+    requireAuthorisedContract requireIsOperational requireInsuranceExists(_insuranceId)
+    returns(uint, uint, uint8, uint, address)
     {
+        return(
+            insurances[_insuranceId].id,
+            insurances[_insuranceId].flightId,
+            insurances[_insuranceId].statusCode,
+            insurances[_insuranceId].amountPaid,
+            insurances[_insuranceId].owner
+        );
     }
-    
 
-    /**
-     *  @dev Transfers eligible payout funds to insuree
-     *
-    */
-    function pay() external pure
+    function setInsuranceStatusExpired(uint _insuranceId) external
+    requireAuthorisedContract requireIsOperational requireInsuranceExists(_insuranceId)
     {
+        insurances[_insuranceId].statusCode = INSURANCE_EXPIRED;
+        emit InsuranceExpired(_insuranceId);
+    }
+
+    function claimInsurance(uint _insuranceId, address _caller) external
+    requireAuthorisedContract requireIsOperational requireInsuranceOwner(_insuranceId, _caller) requireInsuranceExists(_insuranceId)
+    {
+        address owner = insurances[_insuranceId].owner;
+        uint amount = insurances[_insuranceId].amountPaid;
+        insurances[_insuranceId].statusCode = INSURANCE_CLAIMED;
+        owner.transfer(amount);
+        emit InsuranceClaimed(_insuranceId);
     }
 
    /**

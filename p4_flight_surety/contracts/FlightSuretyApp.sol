@@ -212,29 +212,36 @@ contract FlightSuretyApp {
     // Insurance
 
     function buyInsurance(uint _flightId, uint _amountPaid) public
-    requireIsOperational requireAirlineOwner
+    requireIsOperational
     {
-        dataContract.buyInsurance(_flightId, _amountPaid, msg.caller);
+        dataContract.buyInsurance(_flightId, _amountPaid, msg.sender);
     }
 
     function getInsurancesByFlight(uint _flightId) public view
-    requireIsOperational requireAirlineOwner returns(uint[])
+    requireIsOperational returns(uint[])
     {
         return dataContract.getInsurancesByFlight(_flightId);
     }
 
     function getInsurancesByPassenger(address _passenger) public view
-    requireIsOperational requireAirlineOwner returns(uint[])
+    requireIsOperational returns(uint[])
     {
         return dataContract.getInsurancesByPassenger(_passenger);
     }
 
     function getInsuranceById(uint _insuranceId) public view
-    requireIsOperational requireAirlineOwner
+    requireIsOperational
     returns(uint, uint, uint8, uint, address)
     {
         return dataContract.getInsuranceById(_insuranceId);
     }
+
+    function claimInsurance(uint _insuranceId) public
+    requireIsOperational
+    {
+        dataContract.claimInsurance(_insuranceId, msg.sender);
+    }
+
 
    /**
     * @dev Called after oracle has updated flight status
@@ -245,19 +252,22 @@ contract FlightSuretyApp {
         bytes32 key = keccak256(abi.encodePacked(airline, flight, timestamp));
         uint id = dataContract.getFlightId(key);
 
+        uint[] memory insurancesIds;
+
         dataContract.setFlightStatus(id, statusCode);
+        uint i = 0;
 
         if(statusCode == STATUS_CODE_LATE_AIRLINE && block.timestamp >= timestamp){
-            uint[] insurancesIds = dataContract.getInsurancesByFlight(id);
+            insurancesIds = dataContract.getInsurancesByFlight(id);
 
-            for(uint i = 0; i < insurancesIds.length; i++){
+            for(i = 0; i < insurancesIds.length; i++){
                 dataContract.setInsuranceStatusClaimable(insurancesIds[i]);
             }
         }
         else if(statusCode == STATUS_CODE_ON_TIME && block.timestamp >= timestamp){
-            uint[] insurancesIds = dataContract.getInsurancesByFlight(id);
+            insurancesIds = dataContract.getInsurancesByFlight(id);
 
-            for(uint i = 0; i < insurancesIds.length; i++){
+            for(i = 0; i < insurancesIds.length; i++){
                 dataContract.setInsuranceStatusExpired(insurancesIds[i]);
             }
         }
@@ -373,7 +383,7 @@ contract FlightSuretyApp {
 
 
     function getFlightKey(address airline, string flight, uint256 timestamp)
-    public returns(bytes32)
+    public pure returns(bytes32)
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }

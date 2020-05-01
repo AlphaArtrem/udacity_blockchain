@@ -33,6 +33,7 @@ contract FlightSuretyData {
     }
 
     struct Flight {
+        uint id;
         string flight;
         uint8 statusCode;
         uint256 updatedTimestamp;
@@ -133,7 +134,7 @@ contract FlightSuretyData {
     }
 
     modifier requireFlightKeyExists(bytes32 _key){
-        require(flights[_key].id > 0 != "", "Flight is not registered");
+        require(flights[_key].id > 0, "Flight is not registered");
         _;
     }
 
@@ -262,7 +263,10 @@ contract FlightSuretyData {
         require(_departureTimestamp > block.timestamp, "Departure Time Can't Be Less Than Current Time");
 
         bytes32 key = getFlightKey(_airline, _flight, _departureTimestamp);
+        flightCount = flightCount.add(1);
+
         flights[key] = Flight({
+            id: flightCount,
             flight: _flight,
             statusCode: STATUS_CODE_UNKNOWN,
             updatedTimestamp: block.timestamp,
@@ -270,7 +274,6 @@ contract FlightSuretyData {
             airline : _airline
         });
 
-        flightCount = flightCount.add(1);
         flightIdToKey[flightCount] = key;
 
         emit FlightRegistered(_airline, key, flightCount, _flight);

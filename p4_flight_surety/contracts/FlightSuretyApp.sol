@@ -118,7 +118,7 @@ contract FlightSuretyApp {
         operational = true;
         contractOwner = msg.sender;
         dataContract = FlightSuretyData(dataContractAddress);
-        airlineCount = dataContract.getAirlineCount();
+        airlineCount = 1;
     }
 
     /********************************************************************************************/
@@ -135,10 +135,10 @@ contract FlightSuretyApp {
         operational = mode;
     }
 
-    function setTestingMode(bool mode) public requireIsOperational
+    function setTestingMode(bool mode) public view requireIsOperational
     returns (bool)
     {
-        return true;
+        return mode;
     }
 
     /********************************************************************************************/

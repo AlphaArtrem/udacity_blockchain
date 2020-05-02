@@ -204,10 +204,10 @@ contract FlightSuretyData {
         emit AuthorisedContractAdded(_contract);
     }
 
-    function setTestingMode(bool mode) public requireIsOperational
+    function setTestingMode(bool mode) public view requireIsOperational
     returns (bool)
     {
-        return true;
+        return mode;
     }
 
     /********************************************************************************************/
@@ -263,7 +263,7 @@ contract FlightSuretyData {
         return true;
     }
 
-    function registerFlight(address _airline, string _flight, uint256 _departureTimestamp, address _caller) public
+    function registerFlight(address _airline, string memory _flight, uint256 _departureTimestamp, address _caller) public
     requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller) requireActiveAirline(_airline) requireAirlineExists(_airline)
     {
         require(_departureTimestamp > block.timestamp, "Departure Time Can't Be Less Than Current Time");

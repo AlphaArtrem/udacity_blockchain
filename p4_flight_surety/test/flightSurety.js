@@ -96,7 +96,8 @@ contract('Flight Surety Tests', async (accounts) => {
       {
           await config.flightSuretyApp.setTestingMode();
       }
-      catch(e) {
+      catch(e) 
+      {
           revertedApp = true;
       }
 
@@ -118,13 +119,15 @@ contract('Flight Surety Tests', async (accounts) => {
 
   });
 
+
   it('Cannot register and activate an Airline if it is not funded', async () => {
     
     // ARRANGE
     let newAirline = accounts[1];
 
     // ACT
-    try {
+    try 
+    {
         await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
         await config.flightSuretyApp.activateAirline(newAirline);
     }
@@ -137,6 +140,105 @@ contract('Flight Surety Tests', async (accounts) => {
     assert.equal(result, false, "Airline should not be able to register another airline if it hasn't provided funding");
 
   });
- 
 
+  it('Can register and activate an Airline if it is funded', async () => {
+    
+    // ARRANGE
+    let newAirline = accounts[2];
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+        await config.flightSuretyApp.activateAirline(newAirline, {from: newAirline, value : web3.utils.toWei("10", "ether")});
+    }
+    catch(e) 
+    {
+        console.log(JSON.stringify(e));
+    }
+
+    let result = await config.flightSuretyData.isAirlineActive.call(newAirline, {from: config.flightSuretyApp.address}); 
+
+    // ASSERT
+    assert.equal(result, true, "Airline should be able to register another airline if it provided sufficient funding");
+
+  });
+
+  it('Can register and but not activate an Airline without voting', async () => {
+    
+    // Register enough airlines to begin voting phase
+    let newAirline;
+
+    for(let i = 3; i < 6; i++){
+        newAirline = accounts[i];
+        try 
+        {
+            await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+            await config.flightSuretyApp.activateAirline(newAirline, {from: newAirline, value : web3.utils.toWei("10", "ether")});
+        }
+        catch(e) 
+        {
+            console.log(JSON.stringify(e));
+        }
+    }
+
+    newAirline = accounts[6];
+
+    // Add new flight for voting
+    try {
+            await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+            await config.flightSuretyApp.activateAirline(newAirline, {from: newAirline, value : web3.utils.toWei("10", "ether")});
+        }
+    catch(e) 
+        {}
+
+    let added = await config.flightSuretyApp.bufferAirlineExists.call(newAirline); 
+    let active = await config.flightSuretyData.isAirlineActive.call(newAirline, {from: config.flightSuretyApp.address}); 
+
+    // ASSERT
+    assert.equal(added, true, "Airline should be able to add another airline for voting");
+    assert.equal(active, false, "Airline should not be activated without enough votes");
+  });
+
+  it('Can register and activate an Airline with voting and paying fees', async () => {
+    
+    let newAirline = accounts[7];
+
+    // Add new flight for voting
+    try {
+            await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+        }
+    catch(e) 
+        {
+            console.log(+ JSON.stringify(e));
+        }
+    
+    // Cast votes for new airline 5/2 = 2.5 => 2   
+    let voter = accounts[3];
+    try 
+    {
+        await config.flightSuretyApp.voteForAirline(newAirline, {from: voter});
+    }
+    catch(e) 
+    {
+        console.log(JSON.stringify(e));
+    }
+
+    // Pay registreation fees
+    try 
+    {
+        await config.flightSuretyApp.activateAirline(newAirline, {from: newAirline, value : web3.utils.toWei("10", "ether")});
+    }
+    catch(e) 
+    {
+        console.log(JSON.stringify(e))
+    }
+ 
+    let active = await config.flightSuretyData.isAirlineActive.call(newAirline, {from: config.flightSuretyApp.address}); 
+
+    // ASSERT
+    assert.equal(active, true, "Airline should be activated with enough votes");
+  });
+
+  
 });

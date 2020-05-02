@@ -26,6 +26,7 @@ contract FlightSuretyData {
     uint private airlineCount;
     uint private flightCount;
     uint private insuranceCount;
+    uint private voterCount;
 
     struct Airline{
         uint id;
@@ -74,8 +75,10 @@ contract FlightSuretyData {
         airlineCount = 0;
         flightCount = 0;
         insuranceCount = 0;
+        voterCount = 0;
         contractOwner = msg.sender;
         airlineCount = airlineCount.add(1);
+        voterCount = voterCount.add(1);
         airlines[contractOwner] = Airline({id: airlineCount, isActive : true});
         address(this).transfer(msg.value);
     }
@@ -209,6 +212,13 @@ contract FlightSuretyData {
         // no body just a test function
     }
 
+    function getVoterCount() public view
+    requireAuthorisedContract requireIsOperational returns(uint)
+    {
+        return voterCount;
+    }
+
+
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
@@ -227,10 +237,11 @@ contract FlightSuretyData {
         emit AirlineRegistered(_airline, airlineCount);
     }
 
-    function activateAirline(address _airline, address _caller) public
-    requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller) requireAirlineExists(_airline)
+    function activateAirline(address _airline) public
+    requireAuthorisedContract requireIsOperational requireAirlineExists(_airline)
     {
         airlines[_airline].isActive = true;
+        voterCount = voterCount.add(1);
 
         emit AirlineActivated(_airline, airlines[_airline].id);
     }

@@ -30,7 +30,7 @@ contract FlightSuretyApp {
 
     address private contractOwner;          // Account used to deploy contract
     bool private operational;
-    uint private airlineCount;
+    uint private voterCount;
 
     FlightSuretyData dataContract;
 
@@ -86,7 +86,7 @@ contract FlightSuretyApp {
         msg.sender.transfer(change);
     }
 
-    modifier requireregisteredAirline(address _airline){
+    modifier requireRegisteredAirline(address _airline){
         require(dataContract.isAirlineRegistered(_airline) == true, "Airline is not registered");
         _;
     }
@@ -118,7 +118,7 @@ contract FlightSuretyApp {
         operational = true;
         contractOwner = msg.sender;
         dataContract = FlightSuretyData(dataContractAddress);
-        airlineCount = 1;
+        voterCount = 1;
     }
 
     /********************************************************************************************/
@@ -152,29 +152,37 @@ contract FlightSuretyApp {
     function registerAirline(address _airline) public
     requireIsOperational requireAirlineOwner requireUnregisteredAirline(_airline)
     {
-       if(airlineCount < 5){
+       voterCount = dataContract.getVoterCount();
+       if(voterCount < 5){
            dataContract.registerAirline(_airline, msg.sender);
-           airlineCount = dataContract.getAirlineCount();
+           voterCount = dataContract.getVoterCount();
 
            emit AirlineRegistered(_airline, "Pay 10 ether to activate airline");
        }
        else{
            bufferAirlineVoters[_airline].push(msg.sender);
-           airlineCount = dataContract.getAirlineCount();
+           voterCount = dataContract.getVoterCount();
 
            emit AirlineRegistered(_airline, "You need to get 50% votes to activate registraion and pay fees");
        }
     }
 
+    function bufferAirlineExists(address _airline) public view
+    requireIsOperational requireUnregisteredAirline(_airline)
+    returns (bool)
+    {
+        return bufferAirlineVoters[_airline][0] != address(0) ? true : false;
+    }
+
     function voteForAirline(address _airline) public
     requireIsOperational requireAirlineOwner requireUnregisteredAirline(_airline)
     {
-        airlineCount = dataContract.getAirlineCount();
+        voterCount = dataContract.getVoterCount();
         bufferAirlineVoters[_airline].push(msg.sender);
 
-        if(bufferAirlineVoters[_airline].length >= (airlineCount / 2)){
+        if(bufferAirlineVoters[_airline].length >= (voterCount / 2)){
             dataContract.registerAirline(_airline, msg.sender);
-            airlineCount = dataContract.getAirlineCount();
+            voterCount = dataContract.getVoterCount();
 
             emit AirlineRegistered(_airline, "Pay 10 ether to activate airline");
         }
@@ -184,10 +192,11 @@ contract FlightSuretyApp {
 
     }
 
-    function activateAirline(address _airline) public
-    requireIsOperational requireregisteredAirline(_airline) requirePaidEnough(10 ether) requireChange(10 ether)
+    function activateAirline(address _airline) public payable
+    requireIsOperational requireRegisteredAirline(_airline) requirePaidEnough(10 ether) requireChange(10 ether)
     {
-        dataContract.activateAirline(_airline, msg.sender);
+        address(dataContract).transfer(msg.value);
+        dataContract.activateAirline(_airline);
 
         emit AirlineActive(_airline, "Airline Activated");
     }
@@ -438,8 +447,9 @@ contract FlightSuretyApp {
 
 contract FlightSuretyData{
 
+    function getVoterCount() public view returns(uint);
     function registerAirline(address _airline, address _caller) public;
-    function activateAirline(address _airline, address _caller) public;
+    function activateAirline(address _airline) public;
     function getAirlineCount() public view returns(uint);
     function isAirlineOwner(address _caller) public view returns (bool);
     function isAirlineRegistered(address _airline) public view returns(bool);

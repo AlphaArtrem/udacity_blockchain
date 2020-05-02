@@ -21,10 +21,10 @@ var Config = async function(accounts) {
 
 
     let owner = accounts[0];
-    let firstAirline = accounts[1];
+    let firstAirline = accounts[0];
 
-    let flightSuretyData = await FlightSuretyData.new();
-    let flightSuretyApp = await FlightSuretyApp.new();
+    let flightSuretyData = await FlightSuretyData.deployed();
+    let flightSuretyApp = await FlightSuretyApp.deployed();
 
     
     return {

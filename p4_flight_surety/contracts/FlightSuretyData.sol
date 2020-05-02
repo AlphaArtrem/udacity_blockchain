@@ -204,10 +204,9 @@ contract FlightSuretyData {
         emit AuthorisedContractAdded(_contract);
     }
 
-    function setTestingMode(bool mode) public view requireIsOperational
-    returns (bool)
+    function operationalTestingMode() public view requireIsOperational
     {
-        return mode;
+        // no body just a test function
     }
 
     /********************************************************************************************/
@@ -243,24 +242,24 @@ contract FlightSuretyData {
     }
 
     function isAirlineOwner(address _caller) public view
-    requireAuthorisedContract requireIsOperational requireAirlineOwner(_caller)
+    requireAuthorisedContract requireIsOperational
     returns (bool)
     {
-        return true;
+        return airlines[_caller].isActive ? true : false;
     }
 
     function isAirlineRegistered(address _airline) public view
-    requireAuthorisedContract requireIsOperational requireAirlineExists(_airline)
+    requireAuthorisedContract requireIsOperational
     returns(bool)
     {
-        return true;
+        return airlines[_airline].id > 0 ? true : false;
     }
 
     function isAirlineActive(address _airline) public view
-    requireAuthorisedContract requireIsOperational requireActiveAirline(_airline)
+    requireAuthorisedContract requireIsOperational
     returns (bool)
     {
-        return true;
+        return airlines[_airline].isActive ? true : false;
     }
 
     function registerFlight(address _airline, string memory _flight, uint256 _departureTimestamp, address _caller) public
@@ -344,13 +343,13 @@ contract FlightSuretyData {
     }
 
     function getInsurancesByFlight(uint _flightId) public view
-    requireAuthorisedContract requireIsOperational requireFlightExists(_flightId) returns(uint[])
+    requireAuthorisedContract requireIsOperational requireFlightExists(_flightId) returns(uint[] memory)
     {
         return insurancesByFlight[_flightId];
     }
 
     function getInsurancesByPassenger(address _passenger) public view
-    requireAuthorisedContract requireIsOperational returns(uint[])
+    requireAuthorisedContract requireIsOperational returns(uint[] memory)
     {
         return insurancesByPassenger[_passenger];
     }
@@ -411,7 +410,7 @@ contract FlightSuretyData {
     * @dev Fallback function for funding smart contract.
     *
     */
-    function() public payable
+    function() external payable
     {
         fund();
     }

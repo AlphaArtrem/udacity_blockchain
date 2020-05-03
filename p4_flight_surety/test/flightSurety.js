@@ -513,4 +513,81 @@ contract('Flight Surety Tests', async (accounts) => {
 
   });
 
+  
+  it('Can get insurance by flight', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB18", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(8, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.buyInsurance(8, {from : accounts[9], value: web3.utils.toWei("0.5", "ether")}); 
+    }
+    catch(e)
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.getInsurancesByFlight.call(8, {from : accounts[9]});
+    }
+    catch(e)
+    {
+    }
+    // ASSERT
+    assert.equal(result[0], '2' , "Should be able to get insurance by flight");
+
+  });
+
+  it('Can get insurance by passenger', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB19", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(9, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.buyInsurance(9, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+    }
+    catch(e)
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.getInsurancesByPassenger.call(accounts[9], {from : accounts[9]});
+    }
+    catch(e)
+    {
+    }
+    // ASSERT
+    assert.equal(result[0], '1' , "Should be able to get insurance by flight");
+
+  });
+
 });

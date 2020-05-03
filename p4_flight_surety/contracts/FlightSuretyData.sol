@@ -392,7 +392,7 @@ contract FlightSuretyData {
         emit InsuranceExpired(_insuranceId);
     }
 
-    function claimInsurance(uint _insuranceId, address _caller) public
+    function claimInsurance(uint _insuranceId, address _caller) public payable
     requireAuthorisedContract requireIsOperational requireInsuranceOwner(_insuranceId, _caller)
     requireInsuranceExists(_insuranceId) requireInsuranceClaimable(_insuranceId)
     {

@@ -332,7 +332,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        result = await config.flightSuretyApp.addPassengerForFlight.call(2, accounts[9], {from : accounts[8]}); 
+        result = await config.flightSuretyApp.addPassengerForFlight(2, accounts[9], {from : accounts[8]}); 
     }
     catch(e)
     {
@@ -351,7 +351,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        result = await config.flightSuretyApp.addPassengerForFlight.call(3, accounts[9], {from :config.firstAirline}); 
+        result = await config.flightSuretyApp.addPassengerForFlight(3, accounts[9], {from :config.firstAirline}); 
     }
     catch(e)
     {
@@ -377,7 +377,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        await config.flightSuretyApp.addPassengerForFlight.call(3, accounts[9], {from : config.firstAirline}); 
+        await config.flightSuretyApp.addPassengerForFlight(3, accounts[9], {from : config.firstAirline}); 
     }
     catch(e)
     {
@@ -389,6 +389,67 @@ contract('Flight Surety Tests', async (accounts) => {
 
   });
 
+  it('Cannot buy insurance if caller is not a passenger for flight', async () => {
 
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB14", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.buyInsurance(4, {from : accounts[9], value : web3.utils.toWei("1", "ether")}); 
+    }
+    catch(e)
+    {
+        result = false;
+    }
+
+
+
+    // ASSERT
+    assert.equal(result, false , "Only passengers for existing flights can buy insurance");
+
+  });
+
+  it('Cannot buy insurance if passenger doesn\'t pay', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB15", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(5, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.buyInsurance(5, {from : accounts[9]}); 
+    }
+    catch(e)
+    {
+        result = false;
+    }
+
+
+
+    // ASSERT
+    assert.equal(result, false , "Passengers cannot buy insurance without paying");
+
+  });
 
 });

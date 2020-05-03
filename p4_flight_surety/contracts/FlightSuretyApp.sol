@@ -96,6 +96,11 @@ contract FlightSuretyApp {
         _;
     }
 
+    modifier requireAtmostAmount(uint _amount){
+        require(msg.value > 0 && msg.value <= _amount, "You can't pay 0 or more than 1 ether");
+        _;
+    }
+
     /********************************************************************************************/
     /*                                           EVENTS                                         */
     /********************************************************************************************/
@@ -230,9 +235,11 @@ contract FlightSuretyApp {
 
     // Insurance
 
-    function buyInsurance(uint _flightId, uint _amountPaid) public
-    requireIsOperational
+    function buyInsurance(uint _flightId) public payable
+    requireIsOperational requireAtmostAmount(1 ether)
     {
+        uint _amountPaid = msg.value;
+        address(dataContract).transfer(msg.value);
         dataContract.buyInsurance(_flightId, _amountPaid, msg.sender);
     }
 

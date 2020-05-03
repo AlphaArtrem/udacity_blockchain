@@ -318,6 +318,77 @@ contract('Flight Surety Tests', async (accounts) => {
 
   });
 
-  
+  it('Passengers cannot be added by people other than airline owners', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB13", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.addPassengerForFlight.call(2, accounts[9], {from : accounts[8]}); 
+    }
+    catch(e)
+    {
+        result = false;
+    }
+
+    // ASSERT
+    assert.equal(result, false , "Only airline owners should be able to add passengers");
+
+  });
+
+  it('Passengers cannot be added by airline owners if flight doesn\'t exists', async () => {
+
+    // ACT
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.addPassengerForFlight.call(3, accounts[9], {from :config.firstAirline}); 
+    }
+    catch(e)
+    {
+        result = false;
+    }
+
+    // ASSERT
+    assert.equal(result, false , "Airline owners should be able to add passengers only when flight exists");
+
+  });
+
+  it('Passengers can be added by airline owners if flight exists', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB13", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    let result = true;
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight.call(3, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {
+        result = false;
+    }
+
+    // ASSERT
+    assert.equal(result, true , "Airline owners should be able to add passengers only for existing flight");
+
+  });
+
+
 
 });

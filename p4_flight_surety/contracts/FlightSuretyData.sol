@@ -158,7 +158,7 @@ contract FlightSuretyData {
     }
 
     modifier requireInsuranceClaimable(uint _insuranceId){
-        require(insurances[_insuranceId].statusCode == INSURANCE_CLAIMABLE, "Insurnce can't be claimed");
+        require(insurances[_insuranceId].statusCode == INSURANCE_CLAIMABLE, "Insurance can't be claimed");
         _;
     }
 
@@ -170,7 +170,8 @@ contract FlightSuretyData {
     event FlightStatusChanged(uint id, uint8 statusCode);
     event InsuranceCreated(uint id);
     event InsuranceExpired(uint id);
-    event InsuranceClaimed(uint id);
+    event InsuranceClaimable(uint id);
+    event InsuranceClaimed(uint id, uint amount);
     event AirlineRegistered(address airline, uint airlineID);
     event AirlineActivated(address airline, uint airlineID);
     event AuthorisedContractAdded(address _contract);
@@ -389,7 +390,7 @@ contract FlightSuretyData {
     requireAuthorisedContract requireIsOperational requireInsuranceExists(_insuranceId)
     {
         insurances[_insuranceId].statusCode = INSURANCE_CLAIMABLE;
-        emit InsuranceExpired(_insuranceId);
+        emit InsuranceClaimable(_insuranceId);
     }
 
     function claimInsurance(uint _insuranceId, address _caller) public payable
@@ -398,9 +399,10 @@ contract FlightSuretyData {
     {
         address owner = insurances[_insuranceId].owner;
         uint amount = insurances[_insuranceId].amountPaid;
+        amount = amount.mul(3).div(2);
         insurances[_insuranceId].statusCode = INSURANCE_CLAIMED;
         owner.transfer(amount);
-        emit InsuranceClaimed(_insuranceId);
+        emit InsuranceClaimed(_insuranceId, amount);
     }
 
    /**

@@ -302,7 +302,9 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB12", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result;
 
@@ -311,7 +313,9 @@ contract('Flight Surety Tests', async (accounts) => {
         result = await config.flightSuretyApp.getFlight.call(1); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     // ASSERT
     assert.equal(result['0'], config.firstAirline , "Active airline owners should be able to register new flights");
@@ -326,7 +330,9 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB13", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result;
 
@@ -371,7 +377,9 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB13", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result = true;
 
@@ -397,7 +405,9 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB14", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result;
 
@@ -425,14 +435,18 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB15", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.addPassengerForFlight(5, accounts[9], {from : config.firstAirline}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result;
 
@@ -457,14 +471,18 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB16", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.addPassengerForFlight(6, accounts[9], {from : config.firstAirline}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result;
 
@@ -489,14 +507,18 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB17", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.addPassengerForFlight(7, accounts[9], {from : config.firstAirline}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result = true;
 
@@ -522,21 +544,27 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB18", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.addPassengerForFlight(8, accounts[9], {from : config.firstAirline}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.buyInsurance(8, {from : accounts[9], value: web3.utils.toWei("0.5", "ether")}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result;
 
@@ -546,6 +574,7 @@ contract('Flight Surety Tests', async (accounts) => {
     }
     catch(e)
     {
+        console.log(JSON.stringify(e))
     }
     // ASSERT
     assert.equal(result[0], '2' , "Should be able to get insurance by flight");
@@ -560,21 +589,27 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB19", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.addPassengerForFlight(9, accounts[9], {from : config.firstAirline}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.buyInsurance(9, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     let result;
 
@@ -598,7 +633,9 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB20", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     var eventEmitted = false;
 
@@ -631,21 +668,27 @@ contract('Flight Surety Tests', async (accounts) => {
         await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB21", timestamp , {from: config.firstAirline});
     }
     catch(e) 
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.addPassengerForFlight(11, accounts[9], {from : config.firstAirline}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     try
     {
         await config.flightSuretyApp.buyInsurance(11, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
     }
     catch(e)
-    {}
+    {
+        console.log(JSON.stringify(e))
+    }
 
     var eventEmitted = false;
 
@@ -663,7 +706,124 @@ contract('Flight Surety Tests', async (accounts) => {
     }
 
     // ASSERT
-    assert.equal(eventEmitted, true , "Should be able to fetch flight status");
+    assert.equal(eventEmitted, true , "Should be able to update flight status");
+
+  });
+
+  it('Cannot caim insurance if flight was not late', async () => {
+
+    timestamp = (Math.ceil(new Date().valueOf()/1000)) + 24*60*60;
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB22", timestamp , {from: config.firstAirline});
+    }
+    catch(e) 
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(12, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    try
+    {
+        await config.flightSuretyApp.buyInsurance(12, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    try
+    {
+        await config.flightSuretyApp.processFlightStatus(config.firstAirline, "FAB22", timestamp, 30);
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    var eventEmitted;
+
+    try
+    {
+        await config.flightSuretyApp.claimInsurance(5, {from: accounts[9]});
+    }
+    catch(e)
+    {
+        eventEmitted = false;
+    }
+
+    // ASSERT
+    assert.equal(eventEmitted, false , "Should not be able to claim insurance");
+
+  });
+
+  it('Can caim insurance if flight was late', async () => {
+
+    timestamp = (Math.ceil(new Date().valueOf()/1000)) + 24*60*60;
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB23", timestamp , {from: config.firstAirline});
+    }
+    catch(e) 
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(13, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    try
+    {
+        await config.flightSuretyApp.buyInsurance(13, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    try
+    {
+        await config.flightSuretyApp.processFlightStatus(config.firstAirline, "FAB23", timestamp, 20);
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    var eventEmitted;
+
+    await config.flightSuretyData.InsuranceClaimed(function(err, res){
+        eventEmitted = JSON.stringify(res["returnValues"]["amount"]);
+    })
+
+    try
+    {
+        await config.flightSuretyApp.claimInsurance(6, {from: accounts[9]});
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+    // ASSERT
+    assert.equal(eventEmitted, JSON.stringify(web3.utils.toWei("1.125", "ether")) , "Should be able to claim insurance");
 
   });
 

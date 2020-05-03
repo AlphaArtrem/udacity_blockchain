@@ -283,14 +283,14 @@ contract FlightSuretyApp {
         dataContract.setFlightStatus(id, statusCode);
         uint i = 0;
 
-        if(statusCode == STATUS_CODE_LATE_AIRLINE && block.timestamp >= timestamp){
+        if(statusCode == STATUS_CODE_LATE_AIRLINE){
             insurancesIds = dataContract.getInsurancesByFlight(id);
 
             for(i = 0; i < insurancesIds.length; i++){
                 dataContract.setInsuranceStatusClaimable(insurancesIds[i]);
             }
         }
-        else if(statusCode == STATUS_CODE_ON_TIME && block.timestamp >= timestamp){
+        else if(statusCode == STATUS_CODE_ON_TIME){
             insurancesIds = dataContract.getInsurancesByFlight(id);
 
             for(i = 0; i < insurancesIds.length; i++){

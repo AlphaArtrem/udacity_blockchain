@@ -590,4 +590,35 @@ contract('Flight Surety Tests', async (accounts) => {
 
   });
 
+  it('Can fetch flight status', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB20", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    var eventEmitted = false;
+
+    await config.flightSuretyApp.OracleRequest(function(err, res){
+        eventEmitted = true
+    })
+
+
+    try
+    {
+        await config.flightSuretyApp.fetchFlightStatus(10);
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    // ASSERT
+    assert.equal(eventEmitted, true , "Should be able to fetch flight status");
+
+  });
+
 });

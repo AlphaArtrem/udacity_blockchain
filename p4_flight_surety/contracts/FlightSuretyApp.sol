@@ -303,8 +303,9 @@ contract FlightSuretyApp {
 
 
     // Generate a request for oracles to fetch flight information
-    function fetchFlightStatus(address airline, string flight, uint256 timestamp) external
+    function fetchFlightStatus(uint _id) external
     {
+        (address airline, string memory flight, uint256 timestamp, ) = dataContract.getFlight(_id);
         uint8 index = getRandomIndex(msg.sender);
 
         // Generate a unique key for storing the request

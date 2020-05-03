@@ -621,4 +621,50 @@ contract('Flight Surety Tests', async (accounts) => {
 
   });
 
+  it('Can update flight status', async () => {
+
+    timestamp = (Math.ceil(new Date().valueOf()/1000)) + 24*60*60;
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB21", timestamp , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(11, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.buyInsurance(11, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+    }
+    catch(e)
+    {}
+
+    var eventEmitted = false;
+
+    await config.flightSuretyApp.FlightStatusChanged(function(err, res){
+        eventEmitted = true
+    })
+
+    try
+    {
+        await config.flightSuretyApp.processFlightStatus(config.firstAirline, "FAB21", timestamp, 20);
+    }
+    catch(e)
+    {
+        console.log(JSON.stringify(e))
+    }
+
+    // ASSERT
+    assert.equal(eventEmitted, true , "Should be able to fetch flight status");
+
+  });
+
 });

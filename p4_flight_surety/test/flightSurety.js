@@ -240,5 +240,84 @@ contract('Flight Surety Tests', async (accounts) => {
     assert.equal(active, true, "Airline should be activated with enough votes");
   });
 
+  it('Flights cannot be registered for non active airline', async () => {
+    
+    // ARRANGE
+    let airline = accounts[1];
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(airline, "FAB12", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.getFlight.call(1); 
+    }
+    catch(e)
+    {}
+
+    // ASSERT
+    assert.equal(result, undefined, "Flights can only be registered for active airlines");
+
+  });
+
+  it('Flights cannot be registered by non airline owner accounts', async () => {
+    
+    // ARRANGE
+    let airline = accounts[0];
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(airline, "FAB12", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: accounts[1]});
+    }
+    catch(e) 
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.getFlight.call(1); 
+    }
+    catch(e)
+    {}
+
+    // ASSERT
+    assert.equal(result, undefined, "Flights can only be registered for airline owners");
+
+  });
+
+  it('Flights can be registered by active airline owner accounts', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB12", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.getFlight.call(1); 
+    }
+    catch(e)
+    {}
+
+    // ASSERT
+    assert.equal(result['0'], config.firstAirline , "Active airline owners should be able to register new flights");
+
+  });
+
   
+
 });

@@ -444,11 +444,72 @@ contract('Flight Surety Tests', async (accounts) => {
     {
         result = false;
     }
-
-
-
     // ASSERT
     assert.equal(result, false , "Passengers cannot buy insurance without paying");
+
+  });
+
+  it('Cannot buy insurance if passenger pays more than required', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB16", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(6, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {}
+
+    let result;
+
+    try
+    {
+        result = await config.flightSuretyApp.buyInsurance(6, {from : accounts[9], value: web3.utils.toWei("1.5", "ether")}); 
+    }
+    catch(e)
+    {
+        result = false;
+    }
+    // ASSERT
+    assert.equal(result, false , "Passengers should not be able to buy insurance if they pay extra");
+
+  });
+
+  it('Can buy insurance if passenger is registered for flight and pays', async () => {
+
+    // ACT
+    try 
+    {
+        await config.flightSuretyApp.registerFlight(config.firstAirline, "FAB17", (Math.ceil(new Date().valueOf()/1000)) + 24*60*60 , {from: config.firstAirline});
+    }
+    catch(e) 
+    {}
+
+    try
+    {
+        await config.flightSuretyApp.addPassengerForFlight(7, accounts[9], {from : config.firstAirline}); 
+    }
+    catch(e)
+    {}
+
+    let result = true;
+
+    try
+    {
+        await config.flightSuretyApp.buyInsurance(7, {from : accounts[9], value: web3.utils.toWei("0.5", "ether")}); 
+    }
+    catch(e)
+    {
+        result = false;
+    }
+    // ASSERT
+    assert.equal(result, true , "Passengers should be able to buy insurance after paying");
 
   });
 

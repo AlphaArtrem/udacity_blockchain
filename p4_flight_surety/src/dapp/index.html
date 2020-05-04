@@ -36,8 +36,8 @@
                   Flight
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="#">Add</a>
-                  <a class="dropdown-item" href="#">Find</a>
+                  <a class="dropdown-item" id="add-flight-bar">Add</a>
+                  <a class="dropdown-item" id="find-flight-bar">Find</a>
                   <a class="dropdown-item" href="#">Status</a>
                   <a class="dropdown-item" href="#">Insurances</a>
                 </div>
@@ -159,6 +159,73 @@
         </div>
     </div>
     </div>
+
+    <div id="add-flight" style="display: none;">
+        <div id="body" class="row justify-content-md-center" style="margin: 12% 18% 2% 18%; text-align: center;">
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">         
+                    <div class="card text-center">
+                        <div class="card-header">
+                        <h1>Add Flight</h1>
+                        </div>
+                        <div class="card-body">
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <input type="text" class="form-control" id="flight-airline-address" aria-describedby="emailHelp" placeholder="Airline Address">
+                                <br>
+                                <input type="text" class="form-control" id="flight-name" aria-describedby="emailHelp" placeholder="Flight Name">
+                                <br>
+                                <input type="datetime-local" class="form-control" id="flight-timestamp" aria-describedby="emailHelp" placeholder="Departure Timestamp" value="2020-06-12T19:30">
+                            </div>
+                        </div>
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <br>
+                                <button class="btn btn-primary" id='add-flight-btn'>Add Flight</button>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                        <span id="status-add-flight"></span>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div id="find-flight" style="display: block;">
+        <div id="body" class="row justify-content-md-center" style="margin: 12% 18% 2% 18%; text-align: center;">
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">         
+                    <div class="card text-center">
+                        <div class="card-header">
+                        <h1>Search Flight</h1>
+                        </div>
+                        <div class="card-body">
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <input type="number" class="form-control" id="flight-id" placeholder="Flight Id">
+                            </div>
+                        </div>
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <br>
+                                <button class="btn btn-primary" id='find-flight-btn'>Search Flight</button>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                        <span id="status-find-flight"></span>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

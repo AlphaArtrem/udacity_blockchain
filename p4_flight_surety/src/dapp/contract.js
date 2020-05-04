@@ -83,5 +83,27 @@ export default class Contract {
                 callback(error, result);
             });
     }
+
+    registerFlight(airline, flight, timestamp, callback) {
+        let self = this;
+
+        self.flightSuretyApp.methods
+            .registerFlight(airline, flight, timestamp)
+            .send({ from: self.owner}, (error, result) => {
+                console.log(error); 
+                callback(error, result);
+            });
+    }
+
+    getFlight(id, callback) {
+        let self = this;
+
+        self.flightSuretyApp.methods
+            .getFlight(id)
+            .call({ from: self.owner}, (error, result) => {
+                console.log(error, result); 
+                callback(error, result);
+            });
+    }
         
 }

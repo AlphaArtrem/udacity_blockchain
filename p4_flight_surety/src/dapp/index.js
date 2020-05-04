@@ -13,18 +13,40 @@ import './flightsurety.css';
             document.getElementById('add-airline').style.display = 'block';
             document.getElementById('vote-airline').style.display = 'none';
             document.getElementById('pay-airline').style.display = 'none';
+            document.getElementById('add-flight').style.display = 'none';
+            document.getElementById('find-flight').style.display = 'none';
         });
 
         DOM.elid('vote-airline-bar').addEventListener('click', () => {
             document.getElementById('add-airline').style.display = 'none';
             document.getElementById('vote-airline').style.display = 'block';
             document.getElementById('pay-airline').style.display = 'none';
+            document.getElementById('add-flight').style.display = 'none';
+            document.getElementById('find-flight').style.display = 'none';
         });
 
         DOM.elid('pay-airline-bar').addEventListener('click', () => {
             document.getElementById('add-airline').style.display = 'none';
             document.getElementById('vote-airline').style.display = 'none';
             document.getElementById('pay-airline').style.display = 'block';
+            document.getElementById('add-flight').style.display = 'none';
+            document.getElementById('find-flight').style.display = 'none';
+        });
+
+        DOM.elid('add-flight-bar').addEventListener('click', () => {
+            document.getElementById('add-airline').style.display = 'none';
+            document.getElementById('vote-airline').style.display = 'none';
+            document.getElementById('pay-airline').style.display = 'none';
+            document.getElementById('add-flight').style.display = 'block';
+            document.getElementById('find-flight').style.display = 'none';
+        });
+
+        DOM.elid('find-flight-bar').addEventListener('click', () => {
+            document.getElementById('add-airline').style.display = 'none';
+            document.getElementById('vote-airline').style.display = 'none';
+            document.getElementById('pay-airline').style.display = 'none';
+            document.getElementById('add-flight').style.display = 'none';
+            document.getElementById('find-flight').style.display = 'block';
         });
 
         // Read transaction
@@ -54,10 +76,51 @@ import './flightsurety.css';
                 document.getElementById('status-pay-airline').innerHTML = error != undefined ? error : 'Tx : ' + result;
             });
         });
+
+        DOM.elid('add-flight-btn').addEventListener('click', async () =>{
+            let airline = DOM.elid('flight-airline-address').value;
+            let flight = DOM.elid('flight-name').value;
+            let localtime = DOM.elid("flight-timestamp").value.replace('T', ' ');
+            let timestamp = Math.floor(Date.parse(localtime) / 1000);
+            console.log(timestamp);
+            contract.registerFlight(airline, flight, timestamp , (error, result) => {
+                document.getElementById('status-add-flight').innerHTML = error != undefined ? error : 'Tx : ' + result;
+            });
+        });
+
+        
+        DOM.elid('find-flight-btn').addEventListener('click', async () =>{
+            let id = parseInt(DOM.elid('flight-id').value);
+            contract.getFlight(id , (error, result) => {
+                const airline = 'Airline : ' + result[0] + '<br>';
+                const flight = 'Flight : ' + result[1] + '<br>';
+                const departure = 'Departure: ' + Date(parseInt(result[2])) + '<br>';
+                let status = parseInt(result[3]);
+                if(status == 0){
+                    status = 'Status : ' + 'Uknown';
+                }
+                else if(status == 10){
+                    status = 'Status : ' + 'On Time';
+                }
+                else if(status == 20){
+                    status = 'Status : ' + 'Late Due To Airline';
+                }
+                else if(status == 30){
+                    status = 'Status : ' + 'Late Due To Weather';
+                }
+                else if(status == 40){
+                    status = 'Status : ' + 'Late Due To Technical Reasons';
+                }
+                else if(status == 50){
+                    status = 'Status : ' + 'Late';
+                }
+
+                document.getElementById('status-find-flight').innerHTML = error != undefined ? error : airline + flight + departure + status ;
+            });
+        });
     
     });
     
-
 })();
 
 

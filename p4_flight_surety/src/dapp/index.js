@@ -15,6 +15,7 @@ import './flightsurety.css';
             document.getElementById('pay-airline').style.display = 'none';
             document.getElementById('add-flight').style.display = 'none';
             document.getElementById('find-flight').style.display = 'none';
+            document.getElementById('insurances-flight').style.display = 'none';
         });
 
         DOM.elid('vote-airline-bar').addEventListener('click', () => {
@@ -23,6 +24,7 @@ import './flightsurety.css';
             document.getElementById('pay-airline').style.display = 'none';
             document.getElementById('add-flight').style.display = 'none';
             document.getElementById('find-flight').style.display = 'none';
+            document.getElementById('insurances-flight').style.display = 'none';
         });
 
         DOM.elid('pay-airline-bar').addEventListener('click', () => {
@@ -31,6 +33,7 @@ import './flightsurety.css';
             document.getElementById('pay-airline').style.display = 'block';
             document.getElementById('add-flight').style.display = 'none';
             document.getElementById('find-flight').style.display = 'none';
+            document.getElementById('insurances-flight').style.display = 'none';
         });
 
         DOM.elid('add-flight-bar').addEventListener('click', () => {
@@ -39,6 +42,7 @@ import './flightsurety.css';
             document.getElementById('pay-airline').style.display = 'none';
             document.getElementById('add-flight').style.display = 'block';
             document.getElementById('find-flight').style.display = 'none';
+            document.getElementById('insurances-flight').style.display = 'none';
         });
 
         DOM.elid('find-flight-bar').addEventListener('click', () => {
@@ -47,6 +51,16 @@ import './flightsurety.css';
             document.getElementById('pay-airline').style.display = 'none';
             document.getElementById('add-flight').style.display = 'none';
             document.getElementById('find-flight').style.display = 'block';
+            document.getElementById('insurances-flight').style.display = 'none';
+        });
+
+        DOM.elid('insurances-flight-bar').addEventListener('click', () => {
+            document.getElementById('add-airline').style.display = 'none';
+            document.getElementById('vote-airline').style.display = 'none';
+            document.getElementById('pay-airline').style.display = 'none';
+            document.getElementById('add-flight').style.display = 'none';
+            document.getElementById('find-flight').style.display = 'none';
+            document.getElementById('insurances-flight').style.display = 'block';
         });
 
         // Read transaction
@@ -114,8 +128,26 @@ import './flightsurety.css';
                 else if(status == 50){
                     status = 'Status : ' + 'Late';
                 }
-
                 document.getElementById('status-find-flight').innerHTML = error != undefined ? error : airline + flight + departure + status ;
+            });
+            contract.fetchFlightStatus(id, (error, result) => {
+                console.log({ label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp});
+            });
+        });
+
+        DOM.elid('insurances-flight-btn').addEventListener('click', async () =>{
+            let id = parseInt(DOM.elid('flight-insurances-id').value);
+            contract.getInsuranceByFlight(id , (error, result) => {
+                let list = 'Insurance Ids For This Flight ';
+                if(result.length == 0){
+                    list = "No Insurance Found For This Flight";
+                }
+                else{
+                    for(let i = 0; i < result.length ; i++){
+                        list = list + '<br>' + result[i];
+                    }
+                }
+                document.getElementById('status-insurances-flight').innerHTML = error != undefined ? error : list ;
             });
         });
     

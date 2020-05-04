@@ -38,8 +38,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <a class="dropdown-item" id="add-flight-bar">Add</a>
                   <a class="dropdown-item" id="find-flight-bar">Find</a>
-                  <a class="dropdown-item" href="#">Status</a>
-                  <a class="dropdown-item" href="#">Insurances</a>
+                  <a class="dropdown-item" id="insurances-flight-bar">Insurances</a>
                 </div>
               </li>
               <li class="nav-item dropdown">
@@ -217,7 +216,40 @@
                         </div>
                         </div>
                         <div class="card-footer text-muted">
+                        <span>The Oracle Updation Is Initiated When You Search A Flight</span>
                         <span id="status-find-flight"></span>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    
+    <div id="insurances-flight" style="display: none;">
+        <div id="body" class="row justify-content-md-center" style="margin: 12% 18% 2% 18%; text-align: center;">
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">         
+                    <div class="card text-center">
+                        <div class="card-header">
+                        <h1>Search Insurances For Flight</h1>
+                        </div>
+                        <div class="card-body">
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <input type="number" class="form-control" id="flight-insurances-id" placeholder="Flight Id">
+                            </div>
+                        </div>
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <br>
+                                <button class="btn btn-primary" id='insurances-flight-btn'>Search Insurances</button>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                        <span id="status-insurances-flight"></span>
                         <br>
                     </div>
                 </div>

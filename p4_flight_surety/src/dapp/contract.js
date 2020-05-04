@@ -105,5 +105,16 @@ export default class Contract {
                 callback(error, result);
             });
     }
+
+    getInsuranceByFlight(id, callback) {
+        let self = this;
+
+        self.flightSuretyApp.methods
+            .getInsurancesByFlight(id)
+            .call({ from: self.owner}, (error, result) => {
+                console.log(error, result); 
+                callback(error, result);
+            });
+    }
         
 }

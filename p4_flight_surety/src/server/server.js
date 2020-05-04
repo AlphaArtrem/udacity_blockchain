@@ -1,31 +1,66 @@
-import FlightSuretyApp from '../../build/contracts/FlightSuretyApp.json';
-import Config from './config.json';
-import Web3 from 'web3';
-import express from 'express';
+const fs = require("fs");
+const Web3 = require("web3");
+const Oracles = require("./oracles");
+const TruffleContract = require("truffle-contract");
+const express = require("express");
 
-
+let FlightSuretyApp = JSON.parse(fs.readFileSync('../../build/contracts/FlightSuretyApp.json'));
+let Config = JSON.parse(fs.readFileSync("./config.json"));
 let config = Config['localhost'];
-let web3 = new Web3(new Web3.providers.WebsocketProvider(config.url.replace('http', 'ws')));
-web3.eth.defaultAccount = web3.eth.accounts[0];
-let flightSuretyApp = new web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
+let web3Provider = new Web3.providers.WebsocketProvider(config.url.replace('http', 'ws'));
+let flightSuretyApp = TruffleContract(FlightSuretyApp);
+flightSuretyApp.setProvider(web3Provider);
 
 
+(async ()=>{
 
+    let contract, oracles;
+    try 
+    {
+        contract = await flightSuretyApp.at(config.appAddress);
+        oracles = new Oracles(10, contract, new Web3(web3Provider));
+        await oracles.init();
+    } 
+    catch(e)
+    {
+        console.log(e);
+    }
 
-flightSuretyApp.events.OracleRequest({
-    fromBlock: 0
-  }, function (error, event) {
-    if (error) console.log(error)
-    console.log(event)
-});
+    contract.OracleRequest().on("data", async event => {
+            console.log("ABC");
+            let flightStatuses;
+            try 
+            {
+                flightStatuses = await oracles.getFlightStatus(event.returnValues.index);
+            } 
+            catch(e)
+            {
+                console.log('Error getStatus : ' + e);
+                return;
+            }
 
-const app = express();
-app.get('/api', (req, res) => {
-    res.send({
-      message: 'An API for use with your Dapp!'
-    })
-})
+            console.log(flightStatuses);
+            flightStatuses.forEach(async (arr) => {
+                try 
+                {
+                    await contract.submitOracleResponse(
+                        event.returnValues.index,
+                        event.returnValues.airline,
+                        event.returnValues.flight,
+                        event.returnValues.timestamp,
+                        arr[0],
+                        {from: arr[1],  gas: 999999999});
+                }
+                catch(e)
+                {
+                    console.log(e);
+                }
 
-export default app;
+            });
+        }).on("error", err => {
+            console.log(err);
+        });
+})();
+
 
 

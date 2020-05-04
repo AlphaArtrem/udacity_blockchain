@@ -18,7 +18,7 @@ flightSuretyApp.setProvider(web3Provider);
     try 
     {
         contract = await flightSuretyApp.at(config.appAddress);
-        oracles = new Oracles(10, contract, new Web3(web3Provider));
+        oracles = new Oracles(20, contract, new Web3(web3Provider));
         await oracles.init();
     } 
     catch(e)

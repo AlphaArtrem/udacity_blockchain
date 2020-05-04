@@ -53,4 +53,35 @@ export default class Contract {
                 callback(error, payload);
             });
     }
+
+    registerAirline(airline, callback) {
+        let self = this;
+
+        self.flightSuretyApp.methods
+            .registerAirline(airline)
+            .send({ from: self.owner}, (error, result) => {
+                callback(error, result);
+            });
+    }
+
+    voteForAirline(airline, callback) {
+        let self = this;
+        
+        self.flightSuretyApp.methods
+            .voteForAirline(airline)
+            .send({ from: self.owner}, (error, result) => {
+                callback(error, result);
+            });
+    }
+
+    activateAirline(airline, callback) {
+        let self = this;
+        
+        self.flightSuretyApp.methods
+            .activateAirline(airline)
+            .send({ from: self.owner, value: this.web3.utils.toWei("10", "ether")}, (error, result) => {
+                callback(error, result);
+            });
+    }
+        
 }

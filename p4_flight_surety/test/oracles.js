@@ -23,8 +23,7 @@ contract('Oracles', async (accounts) => {
   it('can register oracles', async () => {
     
     // ARRANGE
-    let fee = await config.flightSuretyApp.REGISTRATION_FEE.call();
-
+    let fee = web3.utils.toWei("1", "ether");
     // ACT
     for(let a=1; a<TEST_ORACLES_COUNT; a++) {      
       await config.flightSuretyApp.registerOracle({ from: accounts[a], value: fee });
@@ -36,11 +35,16 @@ contract('Oracles', async (accounts) => {
   it('can request flight status', async () => {
     
     // ARRANGE
+    let flightCount = 0;
     let flight = 'ND1309'; // Course number
-    let timestamp = Math.floor(Date.now() / 1000);
+    let timestamp = (Math.ceil(new Date().valueOf()/1000)) + 24*60*60;
+
+    // Register a flight
+    await config.flightSuretyApp.registerFlight(config.firstAirline, flight, timestamp , {from: config.firstAirline});
+    flightCount++;
 
     // Submit a request for oracles to get status information for a flight
-    await config.flightSuretyApp.fetchFlightStatus(config.firstAirline, flight, timestamp);
+    await config.flightSuretyApp.fetchFlightStatus(flightCount);
     // ACT
 
     // Since the Index assigned to each test account is opaque by design
@@ -56,11 +60,12 @@ contract('Oracles', async (accounts) => {
         try {
           // Submit a response...it will only be accepted if there is an Index match
           await config.flightSuretyApp.submitOracleResponse(oracleIndexes[idx], config.firstAirline, flight, timestamp, STATUS_CODE_ON_TIME, { from: accounts[a] });
+          console.log('\nAccepted : ', idx, oracleIndexes[idx].toNumber(), flight, timestamp);
 
         }
         catch(e) {
           // Enable this when debugging
-           console.log('\nError', idx, oracleIndexes[idx].toNumber(), flight, timestamp);
+           console.log('\nRejected : ', idx, oracleIndexes[idx].toNumber(), flight, timestamp);
         }
 
       }

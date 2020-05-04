@@ -10,6 +10,8 @@ web3.eth.defaultAccount = web3.eth.accounts[0];
 let flightSuretyApp = new web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
 
 
+
+
 flightSuretyApp.events.OracleRequest({
     fromBlock: 0
   }, function (error, event) {

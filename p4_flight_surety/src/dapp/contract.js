@@ -158,11 +158,21 @@ export default class Contract {
     
     buyInsurance(flight, passenger, amount, callback) {
         let self = this;
-        console.log(amount.toString())
         self.flightSuretyApp.methods
             .buyInsurance(flight, passenger)
             .send
-            ({ from: self.owner, gas: 999999999, value: this.web3.utils.toWei(amount.toString(), "ether")}, (error, result) => {
+            ({ from: passenger, gas: 999999999, value: this.web3.utils.toWei(amount.toString(), "ether")}, (error, result) => {
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
+            });
+    }
+    
+    claimInsurance(id, passenger, callback) {
+        let self = this;
+        self.flightSuretyApp.methods
+            .claimInsurance(id)
+            .send
+            ({ from: passenger, gas: 999999999}, (error, result) => {
+                console.log(error)
                 callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }

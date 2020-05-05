@@ -19,6 +19,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('vote-airline-bar').addEventListener('click', () => {
@@ -31,6 +32,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('pay-airline-bar').addEventListener('click', () => {
@@ -43,6 +45,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('add-flight-bar').addEventListener('click', () => {
@@ -55,6 +58,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('find-flight-bar').addEventListener('click', () => {
@@ -67,6 +71,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('insurances-flight-bar').addEventListener('click', () => {
@@ -79,6 +84,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('add-passenger-bar').addEventListener('click', () => {
@@ -91,6 +97,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'block';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('insurances-passenger-bar').addEventListener('click', () => {
@@ -103,6 +110,7 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'block';
             document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'none';
         });
 
         DOM.elid('buy-insurance-bar').addEventListener('click', () => {
@@ -115,6 +123,20 @@ import './flightsurety.css';
             document.getElementById('add-passenger').style.display = 'none';
             document.getElementById('insurances-passenger').style.display = 'none';
             document.getElementById('buy-insurance').style.display = 'block';
+            document.getElementById('claim-insurance').style.display = 'none';
+        });
+
+        DOM.elid('claim-insurance-bar').addEventListener('click', () => {
+            document.getElementById('add-airline').style.display = 'none';
+            document.getElementById('vote-airline').style.display = 'none';
+            document.getElementById('pay-airline').style.display = 'none';
+            document.getElementById('add-flight').style.display = 'none';
+            document.getElementById('find-flight').style.display = 'none';
+            document.getElementById('insurances-flight').style.display = 'none';
+            document.getElementById('add-passenger').style.display = 'none';
+            document.getElementById('insurances-passenger').style.display = 'none';
+            document.getElementById('buy-insurance').style.display = 'none';
+            document.getElementById('claim-insurance').style.display = 'block';
         });
 
         // Read transaction
@@ -253,6 +275,14 @@ import './flightsurety.css';
             let amount =  parseFloat(DOM.elid('buy-insurances-amount').value);
             contract.buyInsurance(flight, passenger, amount, (error, result) => {
                 document.getElementById('status-buy-insurance').innerHTML = error != undefined ? error.substring(67, error.length - 1) : 'Tx : ' + result + '<br>' + 'Insurance Bought Succesfully';
+            });
+        });
+
+        DOM.elid('claim-insurance-btn').addEventListener('click', async () =>{
+            let passenger = DOM.elid('claim-insurances-passenger-address').value;
+            let id = parseInt(DOM.elid('claim-insurances-id').value);
+            contract.claimInsurance(id, passenger, (error, result) => {
+                document.getElementById('status-claim-insurance').innerHTML = error != undefined ? error.substring(67, error.length - 1) : 'Tx : ' + result + '<br>' + 'Insurance Claimed Succesfully';
             });
         });
     

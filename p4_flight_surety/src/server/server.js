@@ -27,7 +27,7 @@ flightSuretyApp.setProvider(web3Provider);
     }
 
     contract.OracleRequest().on("data", async event => {
-            console.log("ABC");
+
             let flightStatuses;
             try 
             {

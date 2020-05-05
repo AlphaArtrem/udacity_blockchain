@@ -243,6 +243,13 @@ contract FlightSuretyApp {
         return dataContract.getFlight(_id);
     }
 
+    function getFlightCount() public view
+    requireIsOperational
+    returns (uint)
+    {
+        return dataContract.getFlightCount();
+    }
+
     // Passengers
 
     function addPassengerForFlight(uint _flightId, address _passenger) public

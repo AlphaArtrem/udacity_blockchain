@@ -78,6 +78,8 @@
                         <div class=" row justify-content-md-center">
                             <div class="col">
                                 <input type="text" class="form-control" id="airline-address" aria-describedby="emailHelp" placeholder="Airline Address">
+                                <br>
+                                <input type="text" class="form-control" id="airline-adder-address" aria-describedby="emailHelp" placeholder="Your Address">
                             </div>
                         </div>
                         <div class=" row justify-content-md-center">
@@ -111,6 +113,8 @@
                         <div class=" row justify-content-md-center">
                             <div class="col">
                                 <input type="text" class="form-control" id="vote-address" aria-describedby="emailHelp" placeholder="Airline Address">
+                                <br>
+                                <input type="text" class="form-control" id="voter-address" aria-describedby="emailHelp" placeholder="Your Address">
                             </div>
                         </div>
                         <div class=" row justify-content-md-center">
@@ -144,6 +148,8 @@
                         <div class=" row justify-content-md-center">
                             <div class="col">
                                 <input type="text" class="form-control" id="pay-address" aria-describedby="emailHelp" placeholder="Airline Address">
+                                <br>
+                                <input type="text" class="form-control" id="paying-address" aria-describedby="emailHelp" placeholder="Paying Address">
                             </div>
                         </div>
                         <div class=" row justify-content-md-center">
@@ -397,8 +403,36 @@
     </div>
     </div>
 
-
-
+    <div id="check-insurance" style="display: none;">
+        <div id="body" class="row justify-content-md-center" style="margin: 12% 18% 2% 18%; text-align: center;">
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">         
+                    <div class="card text-center">
+                        <div class="card-header">
+                        <h1>Check Insurance Status</h1>
+                        </div>
+                        <div class="card-body">
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <input type="number" class="form-control" id="check-insurances-id" placeholder="Insurance Id">
+                            </div>
+                        </div>
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <br>
+                                <button class="btn btn-primary" id='check-insurance-btn'>Check Insurance</button>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                        <span id="status-check-insurance"></span>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

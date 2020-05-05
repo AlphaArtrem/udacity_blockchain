@@ -49,18 +49,29 @@ export default class Contract {
         } 
         self.flightSuretyApp.methods
             .fetchFlightStatus(flight)
-            .send({ from: self.owner}, (error, result) => {
-                callback(error, payload);
+            .send({ from: self.owner , gas: 999999999}, (error, result) => {
+                callback(error != undefined ? JSON.stringify(error.message) : error, payload);
             });
     }
 
+    registerAirlineStatus(airline, callback){
+        let self = this;
+
+        self.flightSuretyApp.methods
+            .registerAirlineStatus(airline)
+            .call({ from: self.owner, gas: 999999999}, (error, result) => {
+                callback((error != undefined ? JSON.stringify(error.message) : error), result);
+            });
+    }
+    
     registerAirline(airline, callback) {
         let self = this;
 
         self.flightSuretyApp.methods
             .registerAirline(airline)
-            .send({ from: self.owner}, (error, result) => {
-                callback(error, result);
+            .send({ from: self.owner, gas: 999999999}, (error, result) => {
+                console.log(error, result)
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }
 
@@ -69,8 +80,8 @@ export default class Contract {
         
         self.flightSuretyApp.methods
             .voteForAirline(airline)
-            .send({ from: self.owner}, (error, result) => {
-                callback(error, result);
+            .send({ from: self.owner, gas: 999999999}, (error, result) => {
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }
 
@@ -79,8 +90,8 @@ export default class Contract {
         
         self.flightSuretyApp.methods
             .activateAirline(airline)
-            .send({ from: self.owner, value: this.web3.utils.toWei("10", "ether")}, (error, result) => {
-                callback(error, result);
+            .send({ from: self.owner, value: this.web3.utils.toWei("10", "ether"), gas: 999999999}, (error, result) => {
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }
 
@@ -89,9 +100,9 @@ export default class Contract {
 
         self.flightSuretyApp.methods
             .registerFlight(airline, flight, timestamp)
-            .send({ from: self.owner}, (error, result) => {
+            .send({ from: self.owner, gas: 999999999}, (error, result) => {
                 console.log(error); 
-                callback(error, result);
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }
 
@@ -100,9 +111,9 @@ export default class Contract {
 
         self.flightSuretyApp.methods
             .getFlight(id)
-            .call({ from: self.owner}, (error, result) => {
+            .call({ from: self.owner, gas: 999999999}, (error, result) => {
                 console.log(error, result); 
-                callback(error, result);
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }
 
@@ -111,9 +122,9 @@ export default class Contract {
 
         self.flightSuretyApp.methods
             .getInsurancesByFlight(id)
-            .call({ from: self.owner}, (error, result) => {
+            .call({ from: self.owner, gas: 999999999}, (error, result) => {
                 console.log(error, result); 
-                callback(error, result);
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }
         

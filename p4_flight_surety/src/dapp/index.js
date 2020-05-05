@@ -73,21 +73,32 @@ import './flightsurety.css';
         DOM.elid('add-airline-btn').addEventListener('click', async () =>{
             let airline = DOM.elid('airline-address').value;
             contract.registerAirline(airline, (error, result) => {
-                document.getElementById('status-add-airline').innerHTML = error != undefined ? error : 'Tx : ' + result;
+                console.log(result);
+                console.log(error != undefined || error != null);
+                document.getElementById('status-add-airline').innerHTML = error != undefined ? error.substring(67, error.length - 1): 'Tx : ' + result;
+            });
+            contract.registerAirlineStatus(airline, (error, result) => {
+                document.getElementById('status-add-airline-2').innerHTML = error != undefined ? error.substring(67, error.length - 1) : result;
             });
         });
 
         DOM.elid('vote-airline-btn').addEventListener('click', async () =>{
             let airline = DOM.elid('vote-address').value;
             contract.voteForAirline(airline, (error, result) => {
-                document.getElementById('status-vote-airline').innerHTML = error != undefined ? error : 'Tx : ' + result;
+                document.getElementById('status-vote-airline').innerHTML = error != undefined ? error.substring(67, error.length - 1) : 'Tx : ' + result;
+            });
+            contract.registerAirlineStatus(airline, (error, result) => {
+                document.getElementById('status-vote-airline-2').innerHTML = error != undefined ? error.substring(67, error.length - 1) : result;
             });
         });
 
         DOM.elid('pay-airline-btn').addEventListener('click', async () =>{
             let airline = DOM.elid('pay-address').value;
             contract.activateAirline(airline, (error, result) => {
-                document.getElementById('status-pay-airline').innerHTML = error != undefined ? error : 'Tx : ' + result;
+                document.getElementById('status-pay-airline').innerHTML = error != undefined ? error.substring(67, error.length - 1) : 'Tx : ' + result;
+            });
+            contract.registerAirlineStatus(airline, (error, result) => {
+                document.getElementById('status-pay-airline-2').innerHTML = error != undefined ? 'Airline Has Been Succesfully Activated' : result;
             });
         });
 
@@ -98,7 +109,7 @@ import './flightsurety.css';
             let timestamp = Math.floor(Date.parse(localtime) / 1000);
             console.log(timestamp);
             contract.registerFlight(airline, flight, timestamp , (error, result) => {
-                document.getElementById('status-add-flight').innerHTML = error != undefined ? error : 'Tx : ' + result;
+                document.getElementById('status-add-flight').innerHTML = error != undefined ? error.substring(67, error.length - 1) : 'Tx : ' + result;
             });
         });
 
@@ -128,7 +139,7 @@ import './flightsurety.css';
                 else if(status == 50){
                     status = 'Status : ' + 'Late';
                 }
-                document.getElementById('status-find-flight').innerHTML = error != undefined ? error : airline + flight + departure + status ;
+                document.getElementById('status-find-flight').innerHTML = error != undefined ? error.substring(67, error.length - 1) : airline + flight + departure + status ;
             });
             contract.fetchFlightStatus(id, (error, result) => {
                 console.log({ label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp});
@@ -147,7 +158,7 @@ import './flightsurety.css';
                         list = list + '<br>' + result[i];
                     }
                 }
-                document.getElementById('status-insurances-flight').innerHTML = error != undefined ? error : list ;
+                document.getElementById('status-insurances-flight').innerHTML = error != undefined ? error.substring(67, error.length - 1) : list ;
             });
         });
     

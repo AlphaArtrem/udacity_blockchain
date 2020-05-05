@@ -172,6 +172,23 @@ contract FlightSuretyApp {
        }
     }
 
+    function registerAirlineStatus(address _airline) public view
+    requireIsOperational requireAirlineOwner
+    returns (string)
+    {
+        require(dataContract.isAirlineActive(_airline) == false, "Airline is already active");
+
+       voterCount = dataContract.getVoterCount();
+       if(voterCount < 5 || bufferAirlineVoters[_airline].length >= (voterCount / 2)){
+           return "Pay 10 ether to activate airline";
+       }
+       else{
+            require(dataContract.isAirlineRegistered(_airline) != true, "Airline is already registered, Pay Fee To Activate");
+            return "You need to get 50% votes to activate registraion and pay fees";
+       }
+    }
+
+
     function bufferAirlineExists(address _airline) public view
     requireIsOperational requireUnregisteredAirline(_airline)
     returns (bool)
@@ -192,6 +209,7 @@ contract FlightSuretyApp {
             emit AirlineRegistered(_airline, "Pay 10 ether to activate airline");
         }
         else{
+
             emit AirlineRegistered(_airline, "You need to get more votes to activate registraion and pay fees");
         }
 

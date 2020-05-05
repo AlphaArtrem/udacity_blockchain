@@ -127,5 +127,28 @@ export default class Contract {
                 callback(error != undefined ? JSON.stringify(error.message) : error, result);
             });
     }
+
+    addPassengerForFlight(id, passenger, callback){
+        let self = this;
+
+        self.flightSuretyApp.methods
+            .addPassengerForFlight(id, passenger)
+            .send
+            ({ from: self.owner, gas: 999999999}, (error, result) => {
+                console.log(error, result); 
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
+            });
+    }
+
+    getInsurancesByPassenger(passenger, callback) {
+        let self = this;
+
+        self.flightSuretyApp.methods
+            .getInsurancesByPassenger(passenger)
+            .call({ from: self.owner, gas: 999999999}, (error, result) => {
+                console.log(error, result); 
+                callback(error != undefined ? JSON.stringify(error.message) : error, result);
+            });
+    }
         
 }

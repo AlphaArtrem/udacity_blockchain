@@ -46,8 +46,8 @@
                   Passenger
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="#">Add</a>
-                  <a class="dropdown-item" href="#">Insurances</a>
+                  <a class="dropdown-item" id="add-passenger-bar">Add</a>
+                  <a class="dropdown-item" id="insurances-passenger-bar">Insurances</a>
                 </div>
               </li>
               <li class="nav-item dropdown">
@@ -55,9 +55,9 @@
                   Insurance
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="#">Buy</a>
-                  <a class="dropdown-item" href="#">Claim</a>
-                  <a class="dropdown-item" href="#">Check</a>
+                  <a class="dropdown-item" id="buy-insurance-bar">Buy</a>
+                  <a class="dropdown-item" id="claim-insurance-bar">Claim</a>
+                  <a class="dropdown-item" id="check-insurance-bar">Check</a>
                 </div>
               </li>
             </ul>
@@ -264,6 +264,71 @@
         </div>
     </div>
     </div>
+
+    <div id="add-passenger" style="display: none;">
+        <div id="body" class="row justify-content-md-center" style="margin: 12% 18% 2% 18%; text-align: center;">
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">         
+                    <div class="card text-center">
+                        <div class="card-header">
+                        <h1>Add Passenger For Flight</h1>
+                        </div>
+                        <div class="card-body">
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <input type="number" class="form-control" id="add-passenger-flight-id" placeholder="Flight Id">
+                                <br>
+                                <input type="text" class="form-control" id="add-passenger-address" placeholder="Passenger Address">
+                            </div>
+                        </div>
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <br>
+                                <button class="btn btn-primary" id='add-passenger-btn'>Add Passenger</button>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                        <span id="status-add-passenger"></span>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div id="insurances-passenger" style="display: none;">
+        <div id="body" class="row justify-content-md-center" style="margin: 12% 18% 2% 18%; text-align: center;">
+            <div class="card col" style="width: 18rem;">
+                <div class="card-body">         
+                    <div class="card text-center">
+                        <div class="card-header">
+                        <h1>Check Insurances For Passenger</h1>
+                        </div>
+                        <div class="card-body">
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <input type="text" class="form-control" id="insurances-passenger-address" placeholder="Passenger Address">
+                            </div>
+                        </div>
+                        <div class=" row justify-content-md-center">
+                            <div class="col">
+                                <br>
+                                <button class="btn btn-primary" id='insurances-passenger-btn'>Check Insurances</button>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                        <span id="status-insurances-passenger"></span>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
 
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

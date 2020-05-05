@@ -253,12 +253,12 @@ contract FlightSuretyApp {
 
     // Insurance
 
-    function buyInsurance(uint _flightId) public payable
+    function buyInsurance(uint _flightId, address _passenger) public payable
     requireIsOperational requireAtmostAmount(1 ether)
     {
         uint _amountPaid = msg.value;
         address(dataContract).transfer(msg.value);
-        dataContract.buyInsurance(_flightId, _amountPaid, msg.sender);
+        dataContract.buyInsurance(_flightId, _amountPaid, _passenger);
     }
 
     function getInsurancesByFlight(uint _flightId) public view

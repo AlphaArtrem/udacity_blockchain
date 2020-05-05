@@ -413,7 +413,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        result = await config.flightSuretyApp.buyInsurance(4, {from : accounts[9], value : web3.utils.toWei("1", "ether")}); 
+        result = await config.flightSuretyApp.buyInsurance(4, accounts[9], {from : accounts[9], value : web3.utils.toWei("1", "ether")}); 
     }
     catch(e)
     {
@@ -452,7 +452,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        result = await config.flightSuretyApp.buyInsurance(5, {from : accounts[9]}); 
+        result = await config.flightSuretyApp.buyInsurance(5, accounts[9], {from : accounts[9]}); 
     }
     catch(e)
     {
@@ -488,7 +488,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        result = await config.flightSuretyApp.buyInsurance(6, {from : accounts[9], value: web3.utils.toWei("1.5", "ether")}); 
+        result = await config.flightSuretyApp.buyInsurance(6, accounts[9],{from : accounts[9], value: web3.utils.toWei("1.5", "ether")}); 
     }
     catch(e)
     {
@@ -524,7 +524,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        await config.flightSuretyApp.buyInsurance(7, {from : accounts[9], value: web3.utils.toWei("0.5", "ether")}); 
+        await config.flightSuretyApp.buyInsurance(7, accounts[9], {from : accounts[9], value: web3.utils.toWei("0.5", "ether")}); 
     }
     catch(e)
     {
@@ -559,7 +559,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        await config.flightSuretyApp.buyInsurance(8, {from : accounts[9], value: web3.utils.toWei("0.5", "ether")}); 
+        await config.flightSuretyApp.buyInsurance(8, accounts[9], {from : accounts[9], value: web3.utils.toWei("0.5", "ether")}); 
     }
     catch(e)
     {
@@ -604,7 +604,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        await config.flightSuretyApp.buyInsurance(9, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+        await config.flightSuretyApp.buyInsurance(9, accounts[9], {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
     }
     catch(e)
     {
@@ -683,7 +683,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        await config.flightSuretyApp.buyInsurance(11, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+        await config.flightSuretyApp.buyInsurance(11, accounts[9], {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
     }
     catch(e)
     {
@@ -735,7 +735,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        await config.flightSuretyApp.buyInsurance(12, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+        await config.flightSuretyApp.buyInsurance(12, accounts[9], {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
     }
     catch(e)
     {
@@ -792,7 +792,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     try
     {
-        await config.flightSuretyApp.buyInsurance(13, {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
+        await config.flightSuretyApp.buyInsurance(13, accounts[9], {from : accounts[9], value: web3.utils.toWei("0.75", "ether")}); 
     }
     catch(e)
     {

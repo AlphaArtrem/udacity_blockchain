@@ -29,7 +29,7 @@ contract Ownable {
 
     modifier onlyOwner()
     {
-        require(msg.sender = _owner, 'Only contract owner can access this function');
+        require(msg.sender == _owner, 'Only contract owner can access this function');
         _;
     }
 
@@ -313,7 +313,7 @@ contract ERC721 is Pausable, ERC165 {
     // @dev Internal function to mint a new token
     // TIP: remember the functions to use for Counters. you can refresh yourself with the link above
     function _mint(address to, uint256 tokenId) internal
-    requireTokenDoesNotExists requireValidAddress(to)
+    requireTokenDoesNotExists(tokenId) requireValidAddress(to)
     {
         // TODO revert if given tokenId already exists or given address is invalid
         // TODO mint tokenId to given address & increase token count of owner
@@ -599,9 +599,9 @@ contract ERC721Metadata is ERC721Enumerable, usingOraclize {
 
     function _setTokenURI(uint256 tokenId) internal {
         require(_exists(tokenId), "Token doesn't exist");
-        string tokenIdStr = usingOraclize.uint2str(tokenId);
-        string tokenURI = usingOraclize.strConcat(_baseTokenURI, tokenIdStr);
-        _tokenURIs[tokenId] = tokenURI;
+        string memory tokenIdStrTemp = usingOraclize.uint2str(tokenId);
+        string memory tokenURITemp = usingOraclize.strConcat(_baseTokenURI, tokenIdStrTemp);
+        _tokenURIs[tokenId] = tokenURITemp;
     }
 
 }

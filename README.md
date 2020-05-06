@@ -16,5 +16,11 @@ This project containts an Ethereum DApp that demonstrates a Supply Chain flow be
 
 This project is a flight delay insurance for passengers where passengers purchase insurance prior to a flight and if the flight is delayed due to airline's falut the passengers will be paide 1.5 times the amount they paid for the insurance. This will be managed as a collabortion between multiple airlines.
 
+# Project 5 : Real Estate Marketplace
+
+In this project you will be minting your own tokens to represent your title to the real estate properties. Before you mint a token, you need to verify you own the property. You will use zk-SNARKs to create a verification system which can prove you have title to the property without revealing that specific information on the property. We covered the basics on zk-SNARKs in Privacy lesson in Course 5
+
+Once the token has been verified you will place it on a blockchain market place (OpenSea) for others to purchase. Let's get started!
+
 # Practice Mini Projects 
 Contains some practice mini projects made while flloowing classroom instructions.

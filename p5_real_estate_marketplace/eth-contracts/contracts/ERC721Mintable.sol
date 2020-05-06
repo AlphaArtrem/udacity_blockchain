@@ -64,6 +64,54 @@ contract Ownable {
 //  4) create 'whenNotPaused' & 'paused' modifier that throws in the appropriate situation
 //  5) create a Paused & Unpaused event that emits the address that triggered the event
 
+contract Pausable is Ownable{
+
+    // Variables
+
+    bool _paused;
+
+    // Constructor
+
+    constructor() internal
+    {
+        _paused = false;
+    }
+
+    // Modifers
+
+    modifier paused()
+    {
+        require(_paused == true, 'The contract is not paused');
+        _;
+    }
+
+    modifier whenNotPaused()
+    {
+        require(_paused == false, 'The contract is already paused');
+        _;
+    }
+
+    // Events
+
+    event Paused(address triggeredBy);
+    event Unpaused(address triggeredBy);
+
+    // Functions
+
+    function pause() public
+    onlyOwner whenNotPaused
+    {
+        _paused = true;
+        emit Paused(msg.sender);
+    }
+
+    function unpause() public
+    onlyOwner paused
+    {
+        _paused = false;
+        emit Unpaused(msg.sender);
+    }
+}
 
 
 contract ERC165 {

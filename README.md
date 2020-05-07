@@ -23,4 +23,4 @@ In this project you will be minting your own tokens to represent your title to t
 Once the token has been verified you will place it on a blockchain market place (OpenSea) for others to purchase. Let's get started!
 
 # Practice Mini Projects 
-Contains some practice mini projects made while flloowing classroom instructions.
+Contains some practice mini projects made while following classroom instructions.

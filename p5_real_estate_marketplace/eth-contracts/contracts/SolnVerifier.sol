@@ -12,10 +12,10 @@ pragma solidity >=0.5.0;
 //  - make sure you handle metadata as well as tokenSuplly
 
 import "./ERC721Mintable.sol";
-import "./SquareVerifier.sol";
+import "./Verifier.sol";
 
-contract SolnSquareVerifier is NipaHutERC721Token {
-    SquareVerifier squareVerifier;
+contract SolnVerifier is AlphaPropertyToken {
+    Verifier verifier;
 
     // User-defined structures
     struct Solution {
@@ -31,13 +31,19 @@ contract SolnSquareVerifier is NipaHutERC721Token {
 
     // Modifiers
 
-    modifier requireVerified(){
-        require(squareVerifier.verifyTx(a, b, c, input), "Couldn't verify the proof");
+    modifier requireVerified(
+        uint[2] memory a,
+        uint[2][2] memory b,
+        uint[2] memory c,
+        uint[2] memory input
+    ){
+        require(verifier.verifyTx(a, b, c, input), "Couldn't verify the proof");
         _;
     }
 
     modifier requireOwner(address from, uint256 id){
-        require(from == solutions[submittedSolutions[id]].owner, "wrong token owner address provided")
+        require(from == solutions[submittedSolutions[id]].owner, "Token owner addres incorrect");
+        _;
     }
 
     //Events
@@ -47,7 +53,7 @@ contract SolnSquareVerifier is NipaHutERC721Token {
     function addSolution (
         uint[2] memory a,
         uint[2][2] memory b,
-        int[2] memory c,
+        uint[2] memory c,
         uint[2] memory input,
         address account,
         uint256 id
@@ -55,7 +61,7 @@ contract SolnSquareVerifier is NipaHutERC721Token {
     {
         bytes32 key = getKey(a, b, c, input);
 
-        require(solutions[key].id != 0, "Solution already used");
+        require(solutions[key].id == 0, "Solution already used");
 
         submittedSolutions[id] = key;
         solutions[key].id = id;
@@ -68,7 +74,7 @@ contract SolnSquareVerifier is NipaHutERC721Token {
     function getKey(
         uint[2] memory a,
         uint[2][2] memory b,
-        int[2] memory c,
+        uint[2] memory c,
         uint[2] memory input
     ) internal returns(bytes32)
     {
@@ -76,41 +82,15 @@ contract SolnSquareVerifier is NipaHutERC721Token {
     }
 
 
-    function mint(address to, uint256 id) public returns(bool)
-    public return(bool)
+    function mint(address to, uint256 id)
+    public requireOwner(to, id)
+    returns(bool)
     {
 
     require(submittedSolutions[id] != bytes32(0), "Token Soluton Doesn't Exist");
     require(solutions[submittedSolutions[id]].minted == false, "Token With This ID Has Already Been Minted");
-    address owner = solutions[submittedSolutions[id]].owner;
     solutions[submittedSolutions[id]].minted = true;
-    bool result  = super.mint(to, id);
+    bool result = super.mint(to, id);
     return result;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

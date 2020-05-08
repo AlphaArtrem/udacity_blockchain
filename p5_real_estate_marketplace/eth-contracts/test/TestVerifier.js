@@ -14,10 +14,10 @@ contract('Test Verifier', accounts => {
   });
 
   it("Verifies Correct Proof", async() => {
-        assert.equal(await this.contract.verifyTx.call(...Object.values(zokratesProof.proof), zokratesProof.inputs), true)
+        assert.equal(await this.contract.verifyTx.call(...Object.values(zokratesProof.proof), zokratesProof.inputs), true, "Proof should have been vefified")
   });
 
   it("Does Not Verify Correct Proof", async() => {
-        assert.equal(await this.contract.verifyTx.call(...Object.values(zokratesProof.proof), [zokratesProof.inputs[0]+1, zokratesProof.inputs[1]+1]), false);
+        assert.equal(await this.contract.verifyTx.call(...Object.values(zokratesProof.proof), [zokratesProof.inputs[0]+1, zokratesProof.inputs[1]+1]), false, "Proof shouldn\'t be vefified");
   });
 });

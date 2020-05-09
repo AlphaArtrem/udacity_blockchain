@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AlphaProperty DAPP</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <style>
+    input {
+      display: block;
+      margin-bottom: 12px;
+    }
+  </style>
+   <body>
+    <div style="margin: 10% 5% 5% 5%;">
+      <div class="card text-center">
+        <div class="card-header">
+          <h1>AlphaProperty DAPP</h1>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Submit Solution</h5>
+          <div class=" row justify-content-md-center">
+            <div class="col-2">
+              <br>
+              <input type="file" accept=".json, .JSON" class="form-control-file" id="solutionFile">
+              <input type="number" class="form-control" id="solutionTokenID" placeholder="Enter ID For Token">
+            </div>
+          </div>
+          <br>
+          <button class="btn btn-primary" onclick="App.submitSolution()">Submit Solution</a>
+        </div>
+        <hr>
+        <div class="card-body">
+          <h5 class="card-title">Mint Token</h5>
+          <div class=" row justify-content-md-center">
+            <div class="col-2">
+              <br>
+              <input type="number" class="form-control" id="mintTokenID" aria-describedby="emailHelp" placeholder="Enter New Token ID">
+            </div>
+          </div>
+          <br>
+          <button class="btn btn-primary" onclick="App.mintToken()">Mint Token</a>
+        </div>
+        <div class="card-footer text-muted">
+          <span id="status"></span>
+        </div>
+      </div>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>

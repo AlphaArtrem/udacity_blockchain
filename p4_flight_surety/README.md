@@ -20,7 +20,7 @@ git clone https://github.com/AlphaArtrem/udacity_blockchain_developer_nanodegree
 Change directory to ```p4_flight_surety``` folder :
 
 ```
-cd p3_supply_chain
+cd p4_flight_surety
 npm install
 ```
 

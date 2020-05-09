@@ -108,6 +108,18 @@ Contract addresses on the rinkeby network.
 * Verfier               -   ```0xB89155ef747Cc52248B0cFf0A8796820723e4043```
 * AlphaPropertyToken    -   ```0xB441824624989D39c900930a6ba1ef90c144ba23```
 
+## Dapp Screenshot
+
+The DApp User Interface when running should look like...
+
+![Dapp](img/dapp.png)
+
+## OpenSeas
+
+[Visit MarketPlace On OpenSeas](https://rinkeby.opensea.io/assets/alpha-propety-token-v2), The OpenSeas marketplace should look like this...
+
+![Dapp](img/openseas.png)
+
 
 ## Project Resources
 
